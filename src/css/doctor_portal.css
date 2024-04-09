@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  background-color: #f6f6f6 !important;
+  font-family: "Poppins", Rubik !important;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #e4e4e4;
+  border-radius: 0px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #2744DF;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #2744DF;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+.signup_container .ant-form-item-explain-error {
+  width: 145%;
+}
+
+.nav_menu li {
+  font-size: 15px;
+  font-weight: 500;
+  word-spacing: 8px;
+  border: none;
+  overflow: auto;
+}
+
+
+.ant-layout-sider-children {
+  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px !important;
+  border-right: 1px solid rgb(235 235 235);
+  overflow: hidden;
+  /* margin-right: 10px; */
+}
+
+.ant-layout-header {
+  padding: 0px !important;
+}
+
+.prescription_form .ant-upload-drag {
+  height: 30% !important;
+}
+
+.ant-modal-footer .ant-btn-primary {
+  background-color: #2744DF;
+}
+
+.ant-form-item-required {
+  font-size: 0.8rem !important;
+  font-weight: 530;
+}
+
+.ant-form-item-required::before {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+}
