@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
+import defaultUserImg from "../img/user.webp";
+
 import { Button, Form, Input, Select, Layout } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { DatePicker } from 'antd';
 import { MdEmail } from "react-icons/md";
 import { useParams } from 'react-router';
 import { MdOutlineSmartphone } from "react-icons/md";
+import { getDocDetails, updateDocEditProfile } from '../reducer/EditProfile';
 const { Content } = Layout;
 const { Option } = Select;
 
 function DoctorProfile() {
 
+    const { docDetails } = useSelector((state) => state.DocEditProfile)
+
+    const dispatch = useDispatch();
     const [file, setFile] = useState();
+    const [form] = Form.useForm();
+
     const { id } = useParams();
     console.log("ID-:", id)
 
-    const { docDetails } = useSelector((state) => state.DocEditProfile)
-    console.log("docDetails:", docDetails);
+
+
 
     function handleChange(e) {
         console.log(e.target.files);
@@ -24,16 +32,49 @@ function DoctorProfile() {
     }
 
     const onFinish = (values) => {
+        values.id = id
         console.log('Success:', values);
+
+        dispatch(updateDocEditProfile(values));
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
+    useEffect(() => {
+        dispatch(getDocDetails(id));
+    }, [dispatch, id]);
+
+    // Set initial values for the form fields
+    useEffect(() => {
+        if (docDetails) {
+            form.setFieldsValue({
+                id: id,
+                first_name: docDetails?.user?.first_name,
+                last_name: docDetails?.user?.last_name,
+                email: docDetails?.user?.email,
+                phone_no: docDetails?.user?.phone_no,
+                gender: docDetails?.user?.gender,
+                // dob: docDetails?.user?.dob,
+                dob: moment(docDetails?.user?.dob),
+                language: docDetails?.doctor_information?.language.split(","),
+                specialization: docDetails?.doctor_information?.specialization,
+                about: docDetails?.doctor_information?.about,
+                hospital_name: docDetails?.hospital_data?.name,
+                hospital_address: docDetails?.hospital_data?.address,
+                city: docDetails?.hospital_data?.city,
+                state: docDetails?.hospital_data?.state,
+                country: docDetails?.hospital_data?.country,
+                pincode: docDetails?.hospital_data?.pincode,
+            });
+        }
+    }, [form, docDetails]);
     return (
         <>
             <Content className='p-2 m-[82px_10px_0px_14px]'>
                 <div className='bg-white rounded-md p-9'>
                     <Form
+                        form={form}
                         name="basic"
                         layout='vertical'
                         labelCol={{
@@ -59,7 +100,7 @@ function DoctorProfile() {
                             </Button>
                         </div>
                         <div className='m-auto'>
-                            <img src={file ? file : "img/user.webp"} className='w-[100px] h-[100px] rounded-xl m-auto' />
+                            <img src={file ? file : { defaultUserImg }} className='w-[100px] h-[100px] rounded-xl m-auto' />
                             <input type="file" onChange={handleChange} className='m-auto' />
                         </div>
                         <div className='grid grid-cols-3 gap-10 mt-10'>
@@ -77,7 +118,7 @@ function DoctorProfile() {
                                     },
                                 ]}
                             >
-                                <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter Doctor name' value={docDetails[0] ? docDetails[0].first_name : "w"} />
+                                <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter Doctor name' value={docDetails ? docDetails.first_name : "w"} />
 
                             </Form.Item>
 
@@ -104,7 +145,7 @@ function DoctorProfile() {
 
                             <Form.Item
                                 label="Email"
-                                name="Email"
+                                name="email"
                                 rules={[
                                     {
                                         type: 'email',
@@ -131,7 +172,7 @@ function DoctorProfile() {
 
                             <Form.Item
                                 label="Phone No"
-                                name="Phone no"
+                                name="phone_no"
                                 rules={[
                                     {
                                         pattern: /^[0-9]+$/,

@@ -1,4 +1,6 @@
 import React from 'react';
+import mainLogo from "../../img/logo.png"
+
 import { MdEmail } from "react-icons/md";
 import { BiSolidLock, BiSolidLockAlt } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
@@ -30,7 +32,7 @@ const Signup = () => {
     return (
         <>
             <div className='flex justify-center mt-5 mb-3'>
-                <img src="img/logo.png" alt="logo" width={140} />
+                <img src={mainLogo} alt="logo" width={140} />
             </div>
             <div className='flex justify-center items-center mb-10'>
                 <div className='signup_container flex justify-center items-center shadow-myshadow p-[3rem] bg-white rounded-lg'>
@@ -44,8 +46,8 @@ const Signup = () => {
                             <Form
                                 name="basic"
                                 layout="vertical"
-                                labelCol={{ span: 24 }}
-                                wrapperCol={{ span: 17 }}
+                                labelCol={{ span: 30 }}
+                                wrapperCol={{ span: 13 }}
                                 style={{ maxWidth: '400px' }}
                                 initialValues={{ remember: true }}
                                 onFinish={onFinish}
@@ -156,7 +158,8 @@ const Signup = () => {
                                     rules={[{ required: true, message: ' Select Gender!' }]}
                                 >
                                     <Select
-                                        className='w-[200%] text-base focus-within:shadow-none'
+                                        className='text-base focus-within:shadow-none'
+                                        style={{ width: "184%", height: "43px" }}
                                         placeholder="Select your gender"
                                     //  onChange={(value) => {
                                     //     setFormData((prevState) => ({
@@ -229,14 +232,13 @@ const Signup = () => {
                                 >
                                     <Button className='bg-rblue mt-9 w-full h-full text-white text-base py-2 font-bold ' htmlType="submit" disabled={loading}>
                                         {loading ? 'Loading...' : 'Create account'}
-
                                     </Button>
 
 
                                 </Form.Item>
                                 <p className='text-black text-sm items-end mt-5 text-[1rem]'>
                                     Already have an account ?
-                                    <Link to='/x' className='text-rblue underline '>Login </Link>
+                                    <Link to='/' className='text-rblue underline '>Login </Link>
 
                                 </p>
                             </Form>

@@ -1,4 +1,6 @@
 import React from 'react';
+import mainLogo from "../../img/logo.png"
+
 import { BiSolidLock, BiSolidLockAlt } from "react-icons/bi";
 import { Button, Form, Input } from 'antd';
 import { useNavigate } from "react-router-dom";
@@ -18,7 +20,7 @@ export default function ForgotPassword() {
     };
     return (
         <> <div className='flex justify-center mt-5 mb-3'>
-            <img src="img/logo.png" alt="logo" width={140} />
+            <img src={mainLogo} alt="logo" width={140} />
         </div>
             <div className='flex justify-center items-center'>
                 <div className='signup_container flex justify-center items-center shadow-myshadow p-12 bg-white rounded-lg'>

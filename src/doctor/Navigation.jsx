@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     UserOutlined,
 } from '@ant-design/icons';
+
+import mainLogo from "../img/logo.png"
+import collapsedLogo from "../img/collapsed.png";
+import defaultUserImg from "../img/user.webp";
 
 import { IoMdLogOut } from "react-icons/io";
 import { MdOutlineDashboard } from "react-icons/md";
@@ -17,15 +21,21 @@ import { Layout, Menu, Button, Input, Dropdown, Space } from 'antd';
 import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
 import { logoutAPi } from '../reducer/AuthDoctor';
+import { getDocDetails } from '../reducer/EditProfile';
 const { Header, Sider } = Layout;
 
 
 const Navigation = () => {
+    const { docDetails } = useSelector((state) => state.DocEditProfile)
+    console.log("navigationmanager", docDetails);
     const [collapsed, setCollapsed] = useState(false);
     const dispatch = useDispatch();
 
     const id = localStorage.getItem('user_id');
     console.log("Getting id is ", id)
+    useEffect(() => {
+        dispatch(getDocDetails(id));
+    }, [dispatch, id]);
 
 
     return (
@@ -43,7 +53,7 @@ const Navigation = () => {
 
                     <div className="">
                         <Link to="/home">
-                            {collapsed ? (<img src="img/collapsed.png" alt="FavIcon" className=' w-[5rem] m-[20px_auto_27px_auto]' />) : (<img src="img/logo.png" alt="logo" className=' w-32 m-[20px_auto_27px_auto]' />)}
+                            {collapsed ? (<img src={collapsedLogo} alt="FavIcon" className=' w-[5rem] m-[20px_auto_27px_auto]' />) : (<img src={mainLogo} alt="logo" className=' w-32 m-[20px_auto_27px_auto]' />)}
 
                         </Link>
                     </div>
@@ -69,16 +79,16 @@ const Navigation = () => {
                             {
                                 key: '3',
                                 icon: <LiaBusinessTimeSolid style={{ fontSize: 22 }} />,
-                                label: (<Link to="/">Appointment</Link>),
+                                label: (<Link>Appointment</Link>),
                                 children: [
                                     {
                                         key: '3-1',
-                                        label: (<Link to="/">Upcoming Appointment</Link>),
+                                        label: (<Link to="/upcomingapp">Upcoming Appointment</Link>),
                                         onClick: () => { }
                                     },
                                     {
                                         key: '3-2',
-                                        label: (<Link to="/">Completed Appointment</Link>),
+                                        label: (<Link to="/completedapp">Completed Appointment</Link>),
                                         onClick: () => { }
                                     },
                                     // Add more submenu items as needed
@@ -87,7 +97,7 @@ const Navigation = () => {
                             {
                                 key: '4',
                                 icon: <BsPrescription style={{ fontSize: 22 }} />,
-                                label: (<Link to="/">Prescription</Link>),
+                                label: (<Link>Prescription</Link>),
                                 children: [
                                     {
                                         key: '4-1',
@@ -97,7 +107,7 @@ const Navigation = () => {
 
                                     {
                                         key: '4-3',
-                                        label: (<Link to="/">Medical History</Link>),
+                                        label: (<Link to="/medicalhistory">Medical History</Link>),
                                         onClick: () => { }
                                     },
 
@@ -177,12 +187,10 @@ const Navigation = () => {
                                 }
                                 }
                             >
-
-
                                 <Link >
                                     <Space>
-                                        <img src="img/user.webp" alt="" className='max-w-10 ' />
-                                        <p className='min-w-12 capitalize overflow-hidden text-ellipsis'>tirth gajjar</p>
+                                        <img src={defaultUserImg} alt="" className='max-w-10 ' />
+                                        <p className='min-w-12 capitalize overflow-hidden text-ellipsis'>{docDetails?.user?.first_name} {docDetails?.user?.last_name}</p>
                                         <RiArrowDropDownLine className='text-2xl' />
                                     </Space>
                                 </Link>

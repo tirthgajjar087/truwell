@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import OtpInput from 'react-otp-input';
+import mainLogo from "../../img/logo.png"
+
 import { Button } from 'antd';
 import Swal from 'sweetalert2'
 import { useNavigate } from "react-router-dom";
@@ -51,7 +53,7 @@ function OtpForgotVerification() {
     return (
         <>
             <div className='flex justify-center mt-5 mb-3'>
-                <img src="img/logo.png" alt="logo" width={140} />
+                <img src={mainLogo} alt="logo" width={140} />
             </div>
             <div className='flex justify-center items-center'>
                 <div className='login_container flex justify-center items-center shadow-myshadow p-12 bg-white rounded-lg'>
@@ -91,7 +93,7 @@ function OtpForgotVerification() {
                             className='bg-rblue mt-9 w-full h-full text-white text-base py-2 font-bold'
                             htmlType="submit"
                             onClick={handleVerify}
-                            disabled={!isButtonEnabled} 
+                            disabled={!isButtonEnabled}
                         >
                             Verify OTP
                         </Button>

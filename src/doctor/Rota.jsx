@@ -13,14 +13,14 @@ function Rota() {
     const slots = {
         rota_date: "",
         rota_time: "",
-        start_date: "",
-        end_date: "",
-        start_time: "",
-        end_time: '',
+        // start_date: "",
+        // end_date: "",
+        // start_time: "",
+        // end_time: '',
         duration: '',
         price: '',
-        diff_range: '',
-        timeSlots: ''
+        // diff_range: '',
+        // timeSlots: ''
     }
 
     const [createRota, setRota] = useState(slots);
@@ -245,8 +245,8 @@ function Rota() {
                             >
                                 <TimePicker.RangePicker
                                     minuteStep={30}
-                                    className="w-full"
-
+                                    format="HH:mm"
+                                    className="w-full ok_btn"
                                 />
 
                             </Form.Item>

@@ -1,4 +1,6 @@
 import React from 'react';
+import mainLogo from "../../img/logo.png"
+
 import { MdEmail } from "react-icons/md";
 import { BiSolidLockAlt } from "react-icons/bi";
 import { Button, Form, Input } from 'antd';
@@ -13,6 +15,7 @@ const Login = () => {
     const navigate = useNavigate();
     const onFinish = (values) => {
         dispatch(loginDoctor(values));
+
         // console.log('Success:', values); 
         // navigate('/');
     };
@@ -25,7 +28,7 @@ const Login = () => {
 
         <>
             <div className='flex justify-center mt-5 mb-3'>
-                <img src="img/logo.png" alt="logo" width={140} />
+                <img src={mainLogo} alt="logo" width={140} />
             </div>
             <div className='flex justify-center items-center'>
 

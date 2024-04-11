@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import noDataFoundImg from "../img/no_data_found1.png"
 import { Button, Modal, Form, Input, Select, Layout, message, Upload, Table } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
@@ -288,7 +289,7 @@ function Prescription() {
                     dataTable.length <= 0 ? (
                         <>
                             <div className='bg-white shadow-myshaow mt-10 text-center p-16 rounded-md'>
-                                <img src="img/no_data_found1.png" alt="" className='w-72 h-full m-auto' />
+                                <img src={noDataFoundImg} alt="" className='w-72 h-full m-auto' />
                             </div>
                         </>
                     ) : (

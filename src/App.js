@@ -15,6 +15,9 @@ import Prescription from './doctor/Prescription.jsx';
 import Rota from './doctor/Rota.jsx';
 import { useSelector } from 'react-redux';
 import ProtectedRoute from './doctor/ProtectedRoute.jsx';
+import UpcomingApp from './doctor/UpcomingApp.jsx';
+import CompletedApp from './doctor/CompletedApp.jsx';
+import MedicalHistory from './doctor/MedicalHistory.jsx';
 
 
 
@@ -34,19 +37,23 @@ function App() {
               <Route path="/rota" element={<Rota />} />
               <Route path="/prescription" element={<Prescription />} />
               <Route path="/doctorprofile/:id" element={<DoctorProfile />} />
+              <Route path="/upcomingapp" element={<UpcomingApp />} />
+              <Route path="/completedapp" element={<CompletedApp />} />
+              <Route path="/medicalhistory" element={<MedicalHistory />} />
             </Route>
           ) : (
-            <Route path="/" element={<Login />} />
-
+            <>
+              <Route path="/" element={<Login />} />
+              <Route path='/signup' element={<Signup />} />
+              <Route path='/otpverification' element={<OtpVerification />} />
+              <Route path='/otpforgotverification' element={<OtpForgotVerification />} />
+              <Route path='/forgotemail' element={<ForgotEmail />} />
+              <Route path='/forgotpassword' element={<ForgotPassword />} />
+            </>
           )}
 
 
 
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/otpverification' element={<OtpVerification />} />
-          <Route path='/otpforgotverification' element={<OtpForgotVerification />} />
-          <Route path='/forgotemail' element={<ForgotEmail />} />
-          <Route path='/forgotpassword' element={<ForgotPassword />} />
 
 
 
