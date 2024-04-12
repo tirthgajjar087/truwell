@@ -15,7 +15,6 @@ const Login = () => {
     const navigate = useNavigate();
     const onFinish = (values) => {
         dispatch(loginDoctor(values));
-
         // console.log('Success:', values); 
         // navigate('/');
     };

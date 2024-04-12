@@ -27,12 +27,11 @@ const { Header, Sider } = Layout;
 
 const Navigation = () => {
     const { docDetails } = useSelector((state) => state.DocEditProfile)
-    console.log("navigationmanager", docDetails);
     const [collapsed, setCollapsed] = useState(false);
-    const dispatch = useDispatch();
 
+    const dispatch = useDispatch();
     const id = localStorage.getItem('user_id');
-    console.log("Getting id is ", id)
+
     useEffect(() => {
         dispatch(getDocDetails(id));
     }, [dispatch, id]);
@@ -52,7 +51,7 @@ const Navigation = () => {
 
 
                     <div className="">
-                        <Link to="/home">
+                        <Link to="/">
                             {collapsed ? (<img src={collapsedLogo} alt="FavIcon" className=' w-[5rem] m-[20px_auto_27px_auto]' />) : (<img src={mainLogo} alt="logo" className=' w-32 m-[20px_auto_27px_auto]' />)}
 
                         </Link>

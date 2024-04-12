@@ -39,6 +39,9 @@ const config = {
 export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thunkAPI) => {
     try {
         console.log("In login api data--:", data);
+
+       
+
         const checkDoctor = {
             email: data.email,
             password: data.password

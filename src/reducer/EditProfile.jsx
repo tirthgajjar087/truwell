@@ -40,9 +40,14 @@ export const getDocDetails = createAsyncThunk("DocEditProfile/getDocDetails", as
         // const id = localStorage.getItem('user_id');
         // console.log("Getting id is " + id)
         console.log("edit id api is-", id);
+
+
+
+
         axios.get(`${backendURL}/users/${id}`, config)
+        
             .then((res) => {
-                console.log("In edit profile response is -----", res.data.data)
+                // console.log("In edit profile response is -----", res.data.data)
                 thunkAPI.dispatch(getEditProfile(res.data.data))
             })
             .catch((err) => {
@@ -57,7 +62,6 @@ export const getDocDetails = createAsyncThunk("DocEditProfile/getDocDetails", as
 
 export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", async (data, thunkAPI) => {
     try {
-        console.log("before patch api", data);
         const docAlldet = {
             user: {
                 first_name: data.first_name,

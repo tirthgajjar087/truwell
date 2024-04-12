@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
+import { useDispatch, useSelector } from 'react-redux';
 import * as moment from 'moment'
 import { Button, Modal, Form, Input, Select, Layout, Tabs, DatePicker, TimePicker, message } from 'antd';
 const { Content } = Layout;
@@ -7,20 +8,18 @@ const { RangePicker } = DatePicker;
 const { Option } = Select
 
 function Rota() {
+
+    const { addRota } = useSelector((state) => state.newRota);
+    console.log("Your add rota is--", addRota);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
 
     const slots = {
         rota_date: "",
         rota_time: "",
-        // start_date: "",
-        // end_date: "",
-        // start_time: "",
-        // end_time: '',
         duration: '',
         price: '',
-        // diff_range: '',
-        // timeSlots: ''
     }
 
     const [createRota, setRota] = useState(slots);
@@ -40,6 +39,7 @@ function Rota() {
             .then(values => {
                 // console.log('Received values:', values);
 
+                // addRota(values);
                 let startDate = values.rota_date[0];
                 let endDate = values.rota_date[1];
                 let startTime = values.rota_time[0];
@@ -148,8 +148,8 @@ function Rota() {
             let currentSlotStart = currentDate.set('hour', startTime.hour()).set('minute', startTime.minute());
             const endDateTime = currentDate.set('hour', endTime.hour()).set('minute', endTime.minute());
 
-            console.log("print--currentSlotStart", currentSlotStart);
-            console.log("print--endDateTime", endDateTime);
+            // console.log("print--currentSlotStart", currentSlotStart);
+            // console.log("print--endDateTime", endDateTime);
 
             while (currentSlotStart.isBefore(endDateTime)) {
                 const currentSlotEnd = currentSlotStart.add(duration, 'minutes');
@@ -173,7 +173,6 @@ function Rota() {
 
 
     const disabledDate = (current) => {
-
         return current && current < dayjs().startOf('day');
     };
 
@@ -220,7 +219,6 @@ function Rota() {
                             >
 
                                 <RangePicker disabledDate={disabledDate}
-
                                     // onChange={(value) => {
                                     //     setRota((prevState) => ({
                                     //         ...prevState,
