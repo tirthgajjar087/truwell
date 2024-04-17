@@ -3,14 +3,15 @@ import mainLogo from "../../img/logo.png"
 
 import { MdEmail } from "react-icons/md";
 import { BiSolidLockAlt } from "react-icons/bi";
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Spin } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
+import { LoadingOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginDoctor } from '../../reducer/AuthDoctor';
 
 const Login = () => {
 
-    // const { loginObj = {} } = useSelector((state) => state.auth)
+    const { loading } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const onFinish = (values) => {
@@ -68,6 +69,8 @@ const Login = () => {
                                         validateStatus: 'error',
                                         help: 'Please enter a valid email address',
                                     },
+
+
                                     {
                                         required: true,
                                         message: 'Email address is required!',
@@ -107,8 +110,18 @@ const Login = () => {
                                     // span: 16,
                                 }}
                             >
-                                <Button className='bg-rblue mt-9 w-full h-full text-white text-base py-2 font-bold hover:bg-black' htmlType="submit">
-                                    Login
+                                <Button className='bg-rblue mt-9 w-full h-full text-white text-base py-2 font-bold' htmlType="submit" disabled={loading}>
+                                    {loading ? (<Spin
+                                        indicator={
+                                            <LoadingOutlined
+                                                style={{
+                                                    fontSize: 25,
+                                                }}
+                                                spin
+                                            />
+                                        }
+                                    />) : (<p>Login</p>)}
+
                                 </Button>
 
 
@@ -123,6 +136,8 @@ const Login = () => {
 
             </div >
         </>
+
+
 
     );
 };

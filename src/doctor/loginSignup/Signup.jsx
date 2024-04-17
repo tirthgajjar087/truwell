@@ -5,7 +5,9 @@ import { MdEmail } from "react-icons/md";
 import { BiSolidLock, BiSolidLockAlt } from "react-icons/bi";
 import { FaUserDoctor } from "react-icons/fa6";
 import { MdOutlineSmartphone } from "react-icons/md";
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSignUpObj } from '../../reducer/AuthDoctor'
@@ -21,8 +23,9 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const onFinish = (values) => {
-        dispatch(addDoctor(values))
-        // navigate('/otpverification');
+        dispatch(addDoctor(values)).then(() => {
+            navigate('/');
+        })
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -231,7 +234,16 @@ const Signup = () => {
                                     }}
                                 >
                                     <Button className='bg-rblue mt-9 w-full h-full text-white text-base py-2 font-bold ' htmlType="submit" disabled={loading}>
-                                        {loading ? 'Loading...' : 'Create account'}
+                                        {loading ? (<Spin
+                                            indicator={
+                                                <LoadingOutlined
+                                                    style={{
+                                                        fontSize: 25,
+                                                    }}
+                                                    spin
+                                                />
+                                            }
+                                        />) : 'Create account'}
                                     </Button>
 
 

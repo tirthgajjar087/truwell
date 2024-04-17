@@ -1,133 +1,102 @@
-import React, { useState } from 'react'
-import { Button, Input, Table, TimePicker } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Input, Table, Layout } from 'antd';
 import moment from 'moment';
 import { ClockCircleOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { Upcompatientdet } from '../reducer/AppointmentUpCom';
+
+const { Content } = Layout;
 
 function UpcomingApp() {
+    const { upcomingPatientDet, isLoading } = useSelector((state) => state.fetchAppointment);
+    const dispatch = useDispatch();
 
-    const [dataSource, setDataSource] = useState([
-        {
-            number: 1,
-            name: "Rahul",
-            appId: "123553123",
-            date: "10/4/2024",
-            slot: "4:30 PM",
-            mobile: "9823647332",
-            amount: "500/-",
-            status: "Upcoming",
-        },
-        {
-            number: 2,
-            name: "Tirth",
-            appId: "19826324827",
-            date: "12/4/2024",
-            slot: "5:30 PM",
-            mobile: "9283738648",
-            amount: "500/-",
-            status: "Upcoming",
-        },
-        {
-            number: 3,
-            name: "Hardik",
-            appId: "2937647873",
-            date: "10/4/2024",
-            slot: "5:30 PM",
-            mobile: "9827389462",
-            amount: "500/-",
-            status: "Upcoming",
-        },
-        {
-            number: 4,
-            name: "Bhavesh",
-            appId: "19826324827",
-            date: "11/4/2024",
-            slot: "5:30 PM",
-            mobile: "9283738248",
-            amount: "500/-",
-            status: "Upcoming",
-        }
-    ])
+    useEffect(() => {
+        dispatch(Upcompatientdet());
+    }, [dispatch]);
+
+    console.log("uo", upcomingPatientDet)
+
+    // Define pagination settings
+    const pagination = {
+        pageSize: 10, // Number of items per page
+        total: upcomingPatientDet?.length, // Total number of items
+        showSizeChanger: true, // Allow changing page size
+        showQuickJumper: true, // Allow jumping to a specific page
+    };
+
     const columns = [
         {
-            title: "  ",
+            title: "No",
             dataIndex: 'number',
+            render: (text, record, index) => index + 1,
         },
         {
             title: "Appointment ID",
-            dataIndex: "appId",
+            dataIndex: "appointment_id",
         },
         {
             title: "Patient Name",
-            dataIndex: "name",
+            dataIndex: "first_name",
         },
         {
             title: "Mobile No.",
-            dataIndex: "mobile",
+            dataIndex: "phone_no",
         },
-
         {
             title: "Appointment Date",
-            dataIndex: "date",
+            dataIndex: "appointment_date",
+            render: (text) => moment(text).format("DD/MM/YYYY"),
             sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix()
         },
         {
             title: "Appointment Time",
-            dataIndex: "slot",
-            filterDropdown: ({ selectedKeys, setSelectedKeys, confirm, clearFilters }) => {
-                return (
-                    <><Input
-                        autoFocus
-                        placeholder="Enter time"
-                        value={selectedKeys[0]}
-                        onChange={(e) => {
-                            setSelectedKeys(e.target.value ? [e.target.value] : []);
-                            confirm({ closeDropdown: false });
-                        }}
-                        onPressEnter={() => {
-                            confirm();
-                        }}
-                        onBlur={() => {
-                            confirm();
-                        }}
-
-                    ></Input>
-                        <Button onClick={() => {
-                            confirm();
-                        }}
-                            type='primary'
-                            style={{ backgroundColor: '#1677ff' }}
-                        >Search</Button>
-                        <Button onClick={() => {
-                            clearFilters();
-                        }}
-                            style={{ backgroundColor: 'red' }}
-                        >Reset</Button>
-                    </>
-                )
-            },
-            filterIcon: () => {
-                return <ClockCircleOutlined />
-            },
-            onFilter: (value, record) => {
-                return record.slot === value
-            }
-            // sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix()
+            dataIndex: "appointment_date",
+            render: (text) => moment(text).format("HH:mm"),
+            // Remove unnecessary filterDropdown and onFilter properties
         },
-
         {
             title: "Appointment Fee",
-            dataIndex: "amount",
+            dataIndex: "charges",
         },
         {
             title: "Status",
-            dataIndex: "status",
+            dataIndex: "appointment_status",
+            render: (text) => {
+                let backgroundColor, textColor;
+                if (text.toLowerCase() === "upcoming") {
+                    backgroundColor = "blue";
+                    textColor = "white";
+                } else if (text.toLowerCase() === "progress") {
+                    backgroundColor = "red";
+                    textColor = "white";
+                } else {
+                    backgroundColor = "inherit";
+                    textColor = "inherit";
+                }
+                return (
+                    <span style={{ backgroundColor, color: textColor, padding: '3px 6px', borderRadius: '3px' }}>
+                        {text}
+                    </span>
+                );
+            },
         },
-    ]
+    ];
+
     return (
         <div>
-            <Table className='p-2 m-[82px_10px_0px_14px]' columns={columns} dataSource={dataSource} pagination={{ pageSize: 6 }}></Table>
+            <Content className='p-2 m-[82px_10px_0px_5px]'>
+
+                <p className='text-[0.9rem]  mb-3 font-bold'>Upcoming Appointment</p>
+
+
+                <Table className='p-2 ' columns={columns} dataSource={upcomingPatientDet} pagination={pagination}
+                    loading={isLoading}
+                ></Table>
+
+            </Content>
         </div>
-    )
+    );
 }
 
-export default UpcomingApp
+export default UpcomingApp;

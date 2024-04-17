@@ -25,9 +25,10 @@ const initialState = {
         state: "",
         country: "",
         pincode: "",
-    }
+    },
+    isLoading: false
 }
-const config = {
+export const config = {
     headers: {
         'ngrok-skip-browser-warning': 'true',
         'Content-Type': 'application/json',
@@ -40,14 +41,9 @@ export const getDocDetails = createAsyncThunk("DocEditProfile/getDocDetails", as
         // const id = localStorage.getItem('user_id');
         // console.log("Getting id is " + id)
         console.log("edit id api is-", id);
-
-
-
-
         axios.get(`${backendURL}/users/${id}`, config)
-        
+
             .then((res) => {
-                // console.log("In edit profile response is -----", res.data.data)
                 thunkAPI.dispatch(getEditProfile(res.data.data))
             })
             .catch((err) => {
@@ -68,8 +64,6 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
                 last_name: data.last_name,
                 email: data.email,
                 phone_no: data.phone_no,
-                // password: data.password,
-                // confirm_password:data.confirm_password,
                 gender: data.gender,
                 role: data.role,
                 dob: data.dob,
@@ -78,6 +72,7 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
                 language: data.language.join(','),
                 specialization: data.specialization,
                 about: data.about,
+                charges: data.charges,
             },
             hospital_info: {
                 name: data.hospital_name,
@@ -93,7 +88,6 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
         axios.patch(`${backendURL}/users/${id}`, docAlldet, config)
             .then((res) => {
                 if (res.data.status === 200) {
-
                     console.log("In patch response is-----", res.data)
                     const updateEdit_message = res.data;
                     // console.log(login_success)
@@ -129,9 +123,17 @@ export const editProfile = createSlice({
         }
     },
     extraReducers: (builder) => {
+
         builder
+            .addCase(getDocDetails.pending, (state) => {
+                state.isLoading = true;
+            })
             .addCase(getDocDetails.fulfilled, (state, action) => {
-                state.docDetails = action.payload
+                state.docDetails = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getDocDetails.rejected, (state, action) => {
+                state.isLoading = false;
             })
     }
 })

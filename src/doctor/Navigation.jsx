@@ -28,18 +28,26 @@ const { Header, Sider } = Layout;
 const Navigation = () => {
     const { docDetails } = useSelector((state) => state.DocEditProfile)
     const [collapsed, setCollapsed] = useState(false);
+    const [activeKey, setActiveKey] = useState('1');
 
     const dispatch = useDispatch();
     const id = localStorage.getItem('user_id');
 
     useEffect(() => {
         dispatch(getDocDetails(id));
+        const storedActiveKey = localStorage.getItem('activeKey');
+        if (storedActiveKey) {
+            setActiveKey(storedActiveKey);
+        }
     }, [dispatch, id]);
 
+    const handleMenuClick = ({ key }) => {
+        setActiveKey(key);
+        localStorage.setItem('activeKey', key);
+    };
 
     return (
         <>
-
             <Layout style={{ minHeight: '100vh' }}>
                 <Sider
                     trigger={null}
@@ -48,21 +56,18 @@ const Navigation = () => {
                     collapsed={collapsed}
                     style={{ overflowY: 'auto', overflowX: 'hidden', position: 'fixed', left: 0, height: '100vh', backgroundColor: "white", transition: '0.3s all ease-out' }}
                 >
-
-
                     <div className="">
                         <Link to="/">
                             {collapsed ? (<img src={collapsedLogo} alt="FavIcon" className=' w-[5rem] m-[20px_auto_27px_auto]' />) : (<img src={mainLogo} alt="logo" className=' w-32 m-[20px_auto_27px_auto]' />)}
-
                         </Link>
                     </div>
                     <Menu
                         mode="inline"
-                        defaultSelectedKeys={['1']}
+                        selectedKeys={[activeKey]}
                         className='nav_menu'
                         style={{ overflowY: "auto", height: "70%", border: "none" }}
+                        onClick={handleMenuClick} // Handle menu click event
                         items={[
-
                             {
                                 key: '1',
                                 icon: <MdOutlineDashboard style={{ fontSize: 22 }} />,
@@ -71,10 +76,9 @@ const Navigation = () => {
                             {
                                 key: '2',
                                 icon: <BsBuildingAdd style={{ fontSize: 20 }} />,
-                                label: (<Link to="/rota">Rota</Link>),
+                                label: (<Link to={`/rota/${id}`}>Rota</Link>),
                                 onClick: () => { }
                             },
-
                             {
                                 key: '3',
                                 icon: <LiaBusinessTimeSolid style={{ fontSize: 22 }} />,
@@ -90,7 +94,6 @@ const Navigation = () => {
                                         label: (<Link to="/completedapp">Completed Appointment</Link>),
                                         onClick: () => { }
                                     },
-                                    // Add more submenu items as needed
                                 ]
                             },
                             {
@@ -103,13 +106,11 @@ const Navigation = () => {
                                         label: (<Link to="/prescription">Prescription</Link>),
                                         onClick: () => { }
                                     },
-
                                     {
                                         key: '4-3',
                                         label: (<Link to="/medicalhistory">Medical History</Link>),
                                         onClick: () => { }
                                     },
-
                                 ]
                             },
                             {
@@ -117,10 +118,8 @@ const Navigation = () => {
                                 icon: <UserOutlined style={{ fontSize: 22 }} />,
                                 label: (<Link to={`/doctorprofile/${id}`}>Profile</Link>),
                             },
-
                         ]}
                     />
-
                 </Sider>
                 <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 200 }}>
                     <Header
@@ -146,55 +145,46 @@ const Navigation = () => {
                             />
                             <Input placeholder='Search Here' className='w-[30%] focus-within:shadow-none' prefix={<IoSearchSharp />} />
                         </div>
-
-
-
                         <div className='mr-3'>
                             <Dropdown
                                 menu={{
-                                    items:
-
-                                        [
-                                            {
-                                                icon: <UserOutlined style={{ fontSize: 22 }} />,
-                                                label: (
-                                                    <Link to="/doctorprofile">
-                                                        Profile
-                                                    </Link>
-                                                ),
-                                                key: '0',
-                                            },
-                                            {
-                                                type: 'divider',
-                                            },
-                                            {
-                                                icon: <IoMdLogOut style={{ fontSize: 22 }} />,
-                                                label: (
-                                                    <Link to="/"
-                                                        onClick={() => {
-                                                            dispatch(logoutAPi())
-                                                        }}
-                                                    >
-                                                        Logout
-                                                    </Link>
-                                                ),
-                                                key: '1',
-                                            },
-
-
-                                        ]
-                                }
-                                }
+                                    items: [
+                                        {
+                                            icon: <UserOutlined style={{ fontSize: 22 }} />,
+                                            label: (
+                                                <Link to={`/doctorprofile/${id}`}>
+                                                    Profile
+                                                </Link>
+                                            ),
+                                            key: '0',
+                                        },
+                                        {
+                                            type: 'divider',
+                                        },
+                                        {
+                                            icon: <IoMdLogOut style={{ fontSize: 22 }} />,
+                                            label: (
+                                                <Link to="/"
+                                                    onClick={() => {
+                                                        dispatch(logoutAPi())
+                                                    }}
+                                                >
+                                                    Logout
+                                                </Link>
+                                            ),
+                                            key: '1',
+                                        },
+                                    ]
+                                }}
                             >
-                                <Link >
+                                <Link>
                                     <Space>
                                         <img src={defaultUserImg} alt="" className='max-w-10 ' />
-                                        <p className='min-w-12 capitalize overflow-hidden text-ellipsis'>{docDetails?.user?.first_name} {docDetails?.user?.last_name}</p>
+                                        <p className='min-w-12 capitalize overflow-hidden text-ellipsis'>Dr.{docDetails?.user?.first_name} {docDetails?.user?.last_name}</p>
                                         <RiArrowDropDownLine className='text-2xl' />
                                     </Space>
                                 </Link>
                             </Dropdown>
-
                         </div>
                     </Header>
                     <Outlet />
@@ -203,4 +193,4 @@ const Navigation = () => {
         </>
     );
 };
-export default withCollapseState(Navigation); 
+export default withCollapseState(Navigation);

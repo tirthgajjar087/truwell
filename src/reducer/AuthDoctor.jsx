@@ -24,8 +24,8 @@ const initialState = {
 }
 
 // export const backendURL = 'http://192.168.0.115:3000';
+export const backendURL = 'https://c2bb-122-170-10-87.ngrok-free.app';
 
-export const backendURL = 'https://86ad-122-170-10-87.ngrok-free.app';
 
 const config = {
     headers: {
@@ -40,11 +40,13 @@ export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thu
     try {
         console.log("In login api data--:", data);
 
-       
+
+
 
         const checkDoctor = {
             email: data.email,
             password: data.password
+
         }
 
         await axios.post(`${backendURL}/users/log_in`, checkDoctor, config)
@@ -110,12 +112,13 @@ export const addDoctor = createAsyncThunk('auth/addDoctor', async (data, thunkAP
         await axios.post(`${backendURL}/users/sign_up`, newDoctor, config)
             .then((res) => {
                 if (res.data.status === 200) {
+                    console.log("SignUp api--:", res)
+                    thunkAPI.dispatch(updateSignUpObj(res.data))
+                    localStorage.setItem('token', res.data.data.token);
+                    localStorage.setItem('user_id', res.data.data.id);
                     const data_message = res.data;
                     message.success(data_message.message);
                     message.duration(5);
-                    console.log("SignUp api--:", res)
-                    thunkAPI.dispatch(updateSignUpObj(res.data))
-                    localStorage.setItem('token', res.data.token);
                 }
                 if (res.data.status === 400) {
                     const errorMessage = res.data.message;
@@ -126,12 +129,7 @@ export const addDoctor = createAsyncThunk('auth/addDoctor', async (data, thunkAP
             })
             .catch((error) => {
                 console.log(error)
-                if (error.response?.status === 400) {
-                    const errorMessage = error.response.data.message;
-                    message.error(errorMessage);
-                    message.duration(7);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+
                 return thunkAPI.rejectWithValue(error.message);
 
             })
@@ -153,16 +151,17 @@ export const logoutAPi = createAsyncThunk('auth/logoutAPi', async (data, thunkAP
             }
         })
             .then((res) => {
-
                 if (res.data.status === 200) {
                     console.log("Logout api--:", res)
                     thunkAPI.dispatch(logout(res.data));
                     localStorage.removeItem('token');
                     localStorage.removeItem('user_id');
+                    localStorage.removeItem('activeKey');
                     const logout_success = res.data;
                     message.success(logout_success.message);
                     message.duration(5);
                 }
+
                 if (res.data.status === 400) {
                     const errorMessage = res.data.message;
                     message.error(errorMessage);
@@ -200,21 +199,25 @@ const authSlice = createSlice({
                 ...action.payload
             }
             state.isAuthenticated = true;
-            state.token = action.payload.token || {};;
+            state.token = action.payload.token || {};
         },
 
         updateSignUpObj(state, action) {
-            state.isAuthenticated = true;
             state.signupObj = {
                 ...state.signupObj,
                 ...action.payload
             }
+            state.isAuthenticated = true;
+            state.token = action.payload.token || {};
+
         },
         logout(state) {
             state.loginObj = initialState.loginObj;
             state.signupObj = initialState.signupObj;
             localStorage.removeItem('token');
+            localStorage.removeItem('user_id');
             state.token = "";
+            state.user_id = ""
             state.isAuthenticated = initialState.isAuthenticated;
         }
 
@@ -230,7 +233,6 @@ const authSlice = createSlice({
             .addCase(addDoctor.fulfilled, (state, action) => {
                 state.signupObj = action.payload
                 state.loading = false;
-                state.isAuthenticated = true;
             })
             .addCase(addDoctor.rejected, (state, action) => {
                 state.error = action.payload;

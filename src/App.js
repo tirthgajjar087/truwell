@@ -34,7 +34,7 @@ function App() {
           {isAuthenticated ? (
             <Route path="/" element={<WrappedNavigation />}>
               <Route index element={<Dashboard />} />
-              <Route path="/rota" element={<Rota />} />
+              <Route path="/rota/:id" element={<Rota />} />
               <Route path="/prescription" element={<Prescription />} />
               <Route path="/doctorprofile/:id" element={<DoctorProfile />} />
               <Route path="/upcomingapp" element={<UpcomingApp />} />

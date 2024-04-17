@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { useDispatch, useSelector } from 'react-redux';
 import * as moment from 'moment'
+import { useDispatch, useSelector } from 'react-redux';
+import noDataFoundImg from "../img/no_data_found1.png"
 import { Button, Modal, Form, Input, Select, Layout, Tabs, DatePicker, TimePicker, message } from 'antd';
+import { getRotaSlotsApi, getRotadateApi } from '../reducer/RotaReducer';
+import { rotaApi } from '../reducer/RotaReducer';
+
+import { useParams } from 'react-router';
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select
 
 function Rota() {
 
-    const { addRota } = useSelector((state) => state.newRota);
-    console.log("Your add rota is--", addRota);
+    const { id } = useParams();
+    const { addRota, isLoading, check_status } = useSelector((state) => state.newRota);
+    const dispatch = useDispatch();
+    console.log("addRota is", addRota)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
@@ -23,112 +30,81 @@ function Rota() {
     }
 
     const [createRota, setRota] = useState(slots);
-    const [timeSlots, setTimeSlots] = useState([]);
-    const [selectedDates, setSelectedDates] = useState([]);
+
+    useEffect(() => {
+        dispatch(getRotadateApi(id))
+    }, [id])
 
 
     const showModal = () => {
-        setIsModalOpen(true);
         form.resetFields();
+        setRota(slots);
+        setIsModalOpen(true);
     };
 
-    const handleOk = () => {
+    const handleTabChange = (key, date) => {
+        console.log("Tab changed:", key);
+        console.log("Date associated with the tab:", date);
+        dispatch(getRotaSlotsApi(date))
+    };
 
+
+    const handleOk = () => {
         form
             .validateFields()
             .then(values => {
-                // console.log('Received values:', values);
-
-                // addRota(values);
                 let startDate = values.rota_date[0];
                 let endDate = values.rota_date[1];
-                let startTime = values.rota_time[0];
-                let endTime = values.rota_time[1];
+                let startTime = values.rota_time[0].format();
+                let endTime = values.rota_time[1].format();
+                let for_date = startDate.format("DD-MM-YYYY") + "," + endDate.format("DD-MM-YYYY");
+                let duration = parseInt(values.duration);
 
-                const duration = parseInt(values.duration);
+                console.log("For date is--", for_date);
+                console.log("start Time is---", startTime)
+                console.log("End Time is---", endTime)
 
-                const dateDiff1 = endDate.diff(startDate, 'days') + 1;
-                console.log("date-diff1", dateDiff1);
+                const sendRotaData = {
+                    startTime: startTime,
+                    endTime: endTime,
+                    for_date: for_date,
+                    duration: duration,
+                    price: parseInt(values.price),
+                }
+                console.log("Send Rota data-:", sendRotaData);
 
-                const dates = [];
-                for (let i = 0; i < dateDiff1; i++) {
-                    dates.push(startDate.clone().add(i, 'days'));
-                    console.log("date obj", dates, i);
+
+                if (check_status) {
+                    alert("noo");
+                    form.resetFields();
+                    setIsModalOpen(true); // Open the modal when check_status is true
+                } else {
+                    setIsModalOpen(false); // Close the modal when check_status is false
                 }
 
-                setSelectedDates(dates);
+                dispatch(rotaApi(sendRotaData)).then((result) => {
+                    const { payload, error } = result
+                    console.log("My result i---", result);
 
-
-                const totalMinutes = dayjs(endTime).diff(startTime, 'minutes');
-                console.log("Total minutes: " + totalMinutes);
-
-                const numSlots = Math.ceil(totalMinutes / duration);
-                console.log("numSlots", numSlots);
-
-                const timeSlots = [];
-                let currentSlotStart = startTime.clone();
-                for (let i = 0; i < numSlots; i++) {
-
-                    const currentSlotEnd = currentSlotStart.clone().add(duration, 'minutes');
-                    console.log("CurrentSlotEnd", currentSlotEnd);
-
-                    timeSlots.push([currentSlotStart.format('HH:mm'), currentSlotEnd.format('HH:mm')]);
-                    currentSlotStart = currentSlotEnd;
-
-                    console.log("CurrentSlot start--", currentSlotStart);
-                    console.log("CurrentSlot End--", currentSlotEnd);
-
-                }
-
-                console.log('Time Slots:', timeSlots);
-
-                // if (dateDiff > 365 || timeDiff > 87) {
-                //     message.error("The selected time period is too large.");
-                //     return false;
-                // } else {
-                //     setState({...state, rota_dates: diff_range, rota_times: time_range})
-                //     setIsModalOpen(false);
-                // }
-
-
-
-                // if (dateDiff > 0 && timeDiff > 0) {
-
-                // }
-                // else {
-                //     alert("Please select valid date and time")
-                // }
-
-
-
-
-
-                // dispatch(addRota(action.payload))
-
-                // Generate time slots
-                const timeSlots1 = generateTimeSlots(startDate, endDate, startTime, endTime, duration);
-                setTimeSlots(timeSlots1);
-                setRota({
-                    // ...createRota,
-                    start_date: values.rota_date[0],
-                    end_date: values.rota_date[1],
-                    start_time: values.rota_time[0],
-                    end_time: values.rota_time[1],
-                    duration: values.duration,
-                    price: values.price,
-                    diff_range: selectedDates,
-                    timeSlots: timeSlots
+                    // if (!error) {
+                    //     // API call succeeded
+                    //     const { status } = payload;
+                    //     if (status === 200) {
+                    //         // Status is 200, close the modal
+                    //         setIsModalOpen(false);
+                    //         message.success(payload.message);
+                    //     } else {
+                    //         // Status is not 200, show error message
+                    //         message.error(payload.message);
+                    //     }
+                    //     dispatch(getRotadateApi(id));
+                    // }
+                    dispatch(getRotadateApi(id))
+                }).catch(() => {
+                    // setIsModalOpen(true);
                 });
 
-                console.log("SetRota", createRota);
 
-
-                // setDataTable([...dataTable, values]);
-
-                setIsModalOpen(false);
-                form.resetFields();
-
-                // console.log('Form values after reset:', form.getFieldsValue());
             })
             .catch(errorInfo => {
                 console.log('Validation failed:', errorInfo);
@@ -138,37 +114,8 @@ function Rota() {
 
 
 
-    const generateTimeSlots = (startDate, endDate, startTime, endTime, duration) => {
-        const slots = [];
-        let currentDate = dayjs(startDate);
-        const endDateTime = dayjs(endDate).endOf('day');
-
-
-        while (currentDate.isBefore(endDateTime, 'day') || currentDate.isSame(endDateTime, 'day')) {
-            let currentSlotStart = currentDate.set('hour', startTime.hour()).set('minute', startTime.minute());
-            const endDateTime = currentDate.set('hour', endTime.hour()).set('minute', endTime.minute());
-
-            // console.log("print--currentSlotStart", currentSlotStart);
-            // console.log("print--endDateTime", endDateTime);
-
-            while (currentSlotStart.isBefore(endDateTime)) {
-                const currentSlotEnd = currentSlotStart.add(duration, 'minutes');
-                slots.push({
-                    date: currentSlotStart.format('YYYY-MM-DD'),
-                    start: currentSlotStart.format('HH:mm'),
-                    end: currentSlotEnd.format('HH:mm')
-                });
-                currentSlotStart = currentSlotEnd;
-            }
-            currentDate = currentDate.add(1, 'day').startOf('day');
-        }
-
-        return slots;
-    };
-
     const handleCancel = () => {
         setIsModalOpen(false);
-
     };
 
 
@@ -177,8 +124,8 @@ function Rota() {
     };
 
     const handleFormChange = (changedValues, allValues) => {
-        // console.log(changedValues);
-        setRota(allValues)
+        console.log(changedValues);
+        // addRota(allValues)
     };
 
 
@@ -195,6 +142,7 @@ function Rota() {
     return (
         <>
             <Content className='p-2 m-[82px_10px_0px_14px]'>
+                <p className='text-[0.9rem] mb-3 font-bold'>Rota</p>
                 <div className='bg-white py-5 flex justify-end rounded-md'>
                     <Button type="" onClick={showModal} className='bg-rblue mr-5 text-white text-[0.8rem] focus-within:bg-rblue font-bold px-5 py-1 flex align-center'>
                         <span>Add Rota</span>
@@ -204,7 +152,7 @@ function Rota() {
                             form={form}
                             layout='vertical'
                             className='prescription_form'
-                            name="prescriptionForm"
+                            name="rotaForm"
                             initialValues={createRota}
                             onValuesChange={handleFormChange}
                         >
@@ -219,6 +167,7 @@ function Rota() {
                             >
 
                                 <RangePicker disabledDate={disabledDate}
+                                    format={"DD-MM-YYYY"}
                                     // onChange={(value) => {
                                     //     setRota((prevState) => ({
                                     //         ...prevState,
@@ -260,13 +209,14 @@ function Rota() {
                                         message: 'Please enter duration !'
                                     }]}
                                 >
-                                    <Select onChange={(value) => {
-                                        setRota((prevState) => ({
-                                            ...prevState,
-                                            duration: value,
-                                        }))
+                                    <Select
+                                        // onChange={(value) => {
+                                        //     setRota((prevState) => ({
+                                        //         ...prevState,
+                                        //         duration: value,
+                                        //     }))
 
-                                    }}
+                                        // }}
                                         style={{ width: "14.5rem" }}    >
                                         <Option value="30">30 Min</Option>
                                     </Select>
@@ -274,7 +224,7 @@ function Rota() {
 
                                 <Form.Item
                                     name="price"
-                                    label='Price'
+                                    label='Fee'
 
                                     rules={[{
                                         required: true,
@@ -295,26 +245,47 @@ function Rota() {
 
 
                 {
-                    slots?.length <= 0 ? (<p>No Slots</p>) : (
-                        <div className='mt-10 bg-white p-10 rounded-lg overflow-uto'>
-                            <Tabs defaultActiveKey="1" tabPosition="top">
-                                {selectedDates.map((date, index) => (
-                                    <Tabs.TabPane tab={date.format('ddd, MMM DD, YYYY')} key={index + 1}>
-                                        <div className='grid grid-cols-8 gap-7 overflow-y-scroll max-h-72 py-3 px-2'>
-                                            {timeSlots.map((slot, slotIndex) => {
-                                                if (slot.date === date.format('YYYY-MM-DD')) {
-                                                    return (
-                                                        <Button key={slotIndex} className='flex align-center gap-1 justify-center'>
-                                                            {slot.start} - {slot.end}
-                                                        </Button>
-                                                    );
-                                                }
-                                            })}
-                                        </div>
+                    addRota?.available_date?.length <= 0 ? (
+                        <>
+                            <div className='bg-white shadow-myshaow mt-10 text-center p-16 rounded-md'>
+                                <img src={noDataFoundImg} alt="" className='w-72 h-full m-auto' />
+                            </div>
+                        </>
+                    ) : (
+                        <div className='mt-10 bg-white p-10 rounded-lg overflow-auto h-[380px]'>
+                            <Tabs defaultActiveKey="1" tabPosition="top" onChange={(key) => handleTabChange(key, addRota?.available_date[key - 1])}>
+                                {addRota?.available_date?.map((date, index) => (
+                                    <Tabs.TabPane key={index + 1} tab={date}>
+                                        {isLoading ? (<p>Loading...</p>) : (
+                                            <div className='grid grid-cols-8 gap-7 overflow-y-scroll h-[200] py-3 px-2'>
+                                                {Array.isArray(addRota.available_slots) && addRota?.available_slots.length > 0 ? (
+                                                    addRota?.available_slots.map((slot, slotIndex) => {
+                                                        // console.log(slot);
+                                                        return (
+                                                            <Button key={slotIndex} className='flex align-center gap-1 justify-center'>
+                                                                {moment(slot.start_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')} - {moment(slot.end_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')}
+                                                            </Button>
+
+                                                        )
+                                                    })
+                                                )
+
+                                                    : (
+                                                        <div>
+                                                            <p>No Slots available</p>
+                                                            {/* <img src={noDataFoundImg} alt="" className='w-96 h-full m-auto' /> */}
+                                                        </div>
+                                                    )}
+
+                                            </div>
+                                        )
+                                        }
+
                                     </Tabs.TabPane>
                                 ))}
                             </Tabs>
                         </div>
+
                     )
                 }
 

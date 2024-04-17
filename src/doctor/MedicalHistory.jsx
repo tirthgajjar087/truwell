@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { Table } from 'antd';
+import { Table, Layout } from 'antd';
+import moment from 'moment';
+const { Content } = Layout;
 
 
 function MedicalHistory() {
@@ -41,9 +43,12 @@ function MedicalHistory() {
         }
     ]
     return (
-        <>
-            <Table className='p-2 m-[82px_10px_0px_14px]' columns={columns} dataSource={dataSource} pagination={{ pageSize: 6 }}></Table>
-        </>
+        <div>
+            <Content className='p-2 m-[82px_10px_0px_5px]'>
+                <p className='text-[0.9rem]  mb-3 font-bold'>Medical History</p>
+                <Table className='p-2 ' columns={columns} dataSource={dataSource} pagination={{ pageSize: 6 }}></Table>
+            </Content>
+        </div>
     )
 }
 

@@ -91,7 +91,7 @@ function ForgotEmail() {
 
                             </Form.Item>
                             <p className='text-black text-sm text-center mt-5 text-[1rem]'>
-                                Back to <Link to='/login' className='text-rblue underline '>Login ? </Link>
+                                Back to <Link to='/' className='text-rblue underline '>Login ? </Link>
 
                             </p>
                         </Form>

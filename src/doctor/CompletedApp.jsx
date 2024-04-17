@@ -1,131 +1,413 @@
-import React, { useState } from 'react'
-import { Button, Input, Table } from 'antd';
-import { CalendarOutlined, ClockCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, Form, Input, Select, Layout, message, Upload, Table } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
+import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';
+import { ClockCircleOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { completedpatientdet } from '../reducer/AppointmentUpCom';
+import { addPrescription, addPrescriptionApi } from '../reducer/DocPrescription';
+const { Dragger } = Upload;
+const { Content } = Layout;
+const { Option } = Select
 
 function CompletedApp() {
-    const [dataSource, setDataSource] = useState([
-        {
-            number: 1,
-            name: "Komal",
-            appId: "123553123",
-            date: "10/4/2024",
-            slot: "4:30 PM",
-            mobile: "9823647332",
-            amount: "500/-",
-            status: "Completed",
+
+    const { compPatientDet } = useSelector((state) => state.fetchAppointment);
+    const { prescriptions } = useSelector((state, action) => state.myprescription)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
+    const [patientName, setPatientName] = useState('');
+    const [app_id, setApp_id] = useState('')
+
+
+    const [dataTable, setDataTable] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5)
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(completedpatientdet());
+    }, [dispatch]);
+
+
+
+    const showModal = (appointment_id, patient_name) => {
+        form.resetFields();
+        setIsModalOpen(true);
+        console.log("Your share appitnemtnet id--", appointment_id)
+        setPatientName(patient_name);
+        setApp_id(appointment_id);
+        dispatch(addPrescription({ appointment_id: appointment_id }))
+    };
+
+    const handleOk = () => {
+        form
+            .validateFields()
+            .then(values => {
+                console.log('Received values--:', values);
+
+                dispatch(addPrescriptionApi({ ...values }))
+
+                setIsModalOpen(false);
+                form.resetFields();
+
+                // console.log('Form values after reset:', form.getFieldsValue());
+            })
+            .catch(errorInfo => {
+                console.log('Validation failed:', errorInfo);
+            })
+
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        form.resetFields();
+        console.log('Form values after cancel:', form.getFieldsValue());
+    };
+
+    const handleFormChange = (changedValues, allValues) => {
+        // console.log(changedValues);
+    };
+
+    // drag and drop 
+    const props = {
+        name: 'file',
+        multiple: true,
+        action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+
+        onChange(info) {
+            const { status } = info.file;
+            if (status !== 'uploading') {
+                console.log(info.file);
+                console.log(info.fileList);
+                // setFormData((...prevState) => {
+                //     return {
+                //         ...prevState,
+                //         [formData.file.uid]: info.fileList
+                //     }
+                // })
+                // console.log(info.fileList[0].originFileObj);
+            }
+            if (status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully.`);
+            } else if (status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+            }
         },
-        {
-            number: 2,
-            name: "Nivedita",
-            appId: "19826324827",
-            date: "12/4/2024",
-            slot: "5:30 PM",
-            mobile: "9283738648",
-            amount: "500/-",
-            status: "Completed",
+        onDrop(e) {
+            console.log('Dropped files', e.dataTransfer.files);
         },
-        {
-            number: 3,
-            name: "Hardik",
-            appId: "2937647873",
-            date: "10/4/2024",
-            slot: "5:30 PM",
-            mobile: "9827389462",
-            amount: "500/-",
-            status: "Completed",
-        },
-        {
-            number: 4,
-            name: "Bhavesh",
-            appId: "19826324827",
-            date: "11/4/2024",
-            slot: "5:30 PM",
-            mobile: "9283738248",
-            amount: "500/-",
-            status: "Completed",
-        }
-    ])
+    };
+
+    //Patient option list
+    const options = [];
+    for (let i = 10; i < 36; i++) {
+        options.push({
+            label: i.toString(36) + i,
+            value: i.toString(36) + i,
+        });
+    }
+
+
+
+
+    // Define pagination settings
+    const pagination = {
+        pageSize: 10, // Number of items per page
+        total: compPatientDet?.length, // Total number of items
+        showSizeChanger: true, // Allow changing page size
+        showQuickJumper: true, // Allow jumping to a specific page
+    };
+
     const columns = [
         {
-            title: "  ",
+            title: "No",
             dataIndex: 'number',
+            render: (text, record, index) => index + 1,
         },
         {
             title: "Appointment ID",
-            dataIndex: "appId",
+            dataIndex: "appointment_id",
         },
         {
             title: "Patient Name",
-            dataIndex: "name",
+            dataIndex: "first_name",
         },
         {
             title: "Mobile No.",
-            dataIndex: "mobile",
+            dataIndex: "phone_no",
         },
-        
         {
             title: "Appointment Date",
-            dataIndex: "date",
+            dataIndex: "appointment_date",
+            render: (text) => moment(text).format("DD/MM/YYYY"),
             sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix()
         },
         {
             title: "Appointment Time",
-            dataIndex: "slot",
-            filterDropdown: ({ selectedKeys, setSelectedKeys, confirm, clearFilters }) => {
-                return (
-                    <><Input
-                        autoFocus
-                        placeholder="Enter time"
-                        value={selectedKeys[0]}
-                        onChange={(e) => {
-                            setSelectedKeys(e.target.value ? [e.target.value] : []);
-                            confirm({ closeDropdown: false });
-                        } }
-                        onPressEnter={() => {
-                            confirm();
-                        } }
-                        onBlur={() => {
-                            confirm();
-                        } }
-
-                    ></Input>
-                    <Button onClick={() => {
-                        confirm();
-                    } }
-                    type='primary'
-                    style={{ backgroundColor: '#1677ff' }}
-                    >Search</Button>
-                    <Button onClick={() => {
-                        clearFilters();
-                    }}
-                    style={{ backgroundColor: 'red' }}
-                    >Reset</Button>
-                    </>
-                )
-            },
-            filterIcon: () => {
-                return <ClockCircleOutlined />
-            },
-            onFilter: (value, record) => {
-                return record.slot === value
-            }
+            dataIndex: "appointment_date",
+            render: (text) => moment(text).format("HH:mm"),
+            // Remove unnecessary filterDropdown and onFilter properties
         },
-        
         {
             title: "Appointment Fee",
-            dataIndex: "amount",
+            dataIndex: "charges",
         },
         {
             title: "Status",
-            dataIndex: "status",
+            dataIndex: "appointment_status",
+            render: (text) => {
+                let backgroundColor, textColor;
+                if (text.toLowerCase() === "upcoming") {
+                    backgroundColor = "blue";
+                    textColor = "white";
+                } else if (text.toLowerCase() === "progress") {
+                    backgroundColor = "red";
+                    textColor = "white";
+                } else if (text.toLowerCase() === "completed") {
+                    backgroundColor = "green";
+                    textColor = "white";
+                }
+                return (
+                    <span style={{ backgroundColor, color: textColor, padding: '5px 7px', borderRadius: '3px' }}>
+                        {text}
+                    </span>
+                );
+            },
         },
-    ]
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: (text, record, index) => {
+                // console.log("My action", text, record, index);
+                return (
+                    <div>
+                        <Button type="" onClick={() => showModal(record.appointment_id, record.first_name)}
+                            className='bg-rblue mr-5 text-white text-[0.8rem] focus-within:bg-rblue font-bold px-5 py-1 flex align-center'>
+                            <span>Share Prescription</span>
+                        </Button>
+                    </div>
+                );
+            }
+        }
+
+    ];
+
     return (
         <div>
-            <Table className='p-2 m-[82px_10px_0px_14px]' columns={columns} dataSource={dataSource} pagination={{ pageSize: 6 }}></Table>
-        </div>
-    )
+            <Content className='p-2 m-[82px_10px_0px_5px]'>
+
+                <p className='text-[0.9rem]  mb-3 font-bold'>Completed Appointment</p>
+                <Table className='p-2 ' columns={columns} dataSource={compPatientDet} pagination={pagination}></Table>
+
+
+                <Modal
+
+                    title={`Share Prescription `}
+
+                    open={isModalOpen} onOk={handleOk} onCancel={handleCancel} style={{ top: 20 }} maskClosable={false} okText="Submit">
+                    <Form
+                        layout='vertical'
+                        form={form}
+                        className='prescription_form'
+                        name="prescriptionForm"
+                        onValuesChange={handleFormChange}
+                    >
+                        <p className='text-[0.9rem] text-center my-4 font-bold text-sky-500'>
+                            {`Appointment ID: ${app_id} - Appointment Date: ${moment(compPatientDet?.find(patient => patient?.appointment_id === app_id)?.appointment_date).format("DD/MM/YYYY")}`}
+
+
+                        </p>
+
+                        <Form.Item
+                            name="file"
+                            label="Upload File"
+                        >
+
+                            <Dragger {...props} className="file_upload" name='file'>
+                                <p className="ant-upload-drag-icon">
+                                    <InboxOutlined />
+                                </p>
+                                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                                <p className="ant-upload-hint">
+                                    Support for a single or bulk upload.
+
+                                </p>
+                            </Dragger>
+                        </Form.Item>
+                        <div>
+
+                            <Form.Item
+                                name="title"
+                                label="Title"
+                                className='mt-5'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please enter title !'
+                                    }
+                                ]}
+
+                            >
+                                <Input placeholder='Enter Title' className='focus-within:shadow-none    ' />
+                            </Form.Item>
+                            <Form.Item
+                                // name="title"
+                                label="Patient Name"
+                                className='mt-5'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please enter title !'
+                                    }
+                                ]}
+                            >
+                                <Input placeholder='Enter patinet ' className='focus-within:shadow-none ' value={patientName} readOnly />
+                            </Form.Item>
+
+                        </div>
+
+                        <div>
+                            {/* <Form.Item
+                                 name="patientName"
+                                 label='Patient Name'
+ 
+                                 rules={[{
+                                     required: true,
+                                     message: 'Please enter patient name !'
+                                 }]}
+                             >
+                                 <Select
+                                     name=''
+                                     mode="multiple"
+                                     allowClear
+                                     style={{
+                                         width: '100%',
+                                     }}
+                                     placeholder="Please select patient name"
+                                     // defaultValue={['a10', 'c12']}
+                                     onChange={(val) => {
+                                         setFormData(prevState => ({
+                                             ...prevState,
+                                             patientName: val || [],
+                                         }))
+                                     }}
+                                     options={options}
+                                 />
+ 
+                             </Form.Item> */}
+                        </div>
+
+                        <div className='grid grid-cols-2 gap-5'>
+                            <Form.Item
+                                name="prescription_type"
+                                label="Type"
+                                rules={[{ required: true, message: 'Please Select Type!' }]}
+                            >
+                                <Select onChange={(value) => {
+                                    // setFormData((prevState) => ({
+                                    //     ...prevState,
+                                    //     Type: value,
+                                    // }))
+                                }} >
+                                    <Option value="prescription">Prescription</Option>
+                                    <Option value="sick_note">Sick Note</Option>
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item
+                                name="medicine"
+                                label="Medicine"
+
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please enter medicine !'
+                                    }
+                                ]}
+
+                            >
+                                <Input placeholder='Enter medicine' className='focus-within:shadow-none    ' />
+                            </Form.Item>
+
+                        </div>
+
+
+                        <div className='grid grid-cols-2 gap-5'>
+
+                            <Form.Item
+                                name="dosage"
+                                label="Dosage"
+
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please enter dosage !'
+                                    }
+                                ]}
+
+                            >
+                                <Input placeholder='Enter dosage' className='focus-within:shadow-none    ' />
+                            </Form.Item>
+                            <Form.Item
+                                name="quantity"
+                                label="quantity"
+
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please enter quantity !'
+                                    },
+                                    // required number 
+                                    {
+                                        pattern: /^[0-9]+$/,
+                                        message: 'Please enter number'
+                                    }
+
+
+
+                                ]}
+
+                            >
+                                <Input placeholder='Enter quantity' className='focus-within:shadow-none    ' />
+                            </Form.Item>
+
+
+                        </div>
+
+
+
+
+                        {/* {type === 'Sick_note' ? (
+                             <Form.Item
+                                 name="instruction"
+                                 label="Instruction"
+                                 rules={[{ required: false, message: 'Please enter Instruction!' }]}
+                             >
+                                 <TextArea rows={4} />
+                             </Form.Item>
+                         ) : ""} */}
+                        {/* <Input /> */}
+
+                        {/* <Form.Item name='date'></Form.Item> */}
+
+
+                        {/* <Form.Item
+                                 name="frequency"
+                                 label="Frequency"
+                                 rules={[{ required: true, message: 'Please enter frequency!' }]}
+                             >
+                                 <Input />
+                             </Form.Item> */}
+                    </Form>
+                </Modal>
+
+            </Content>
+        </div >
+    );
 }
 
-export default CompletedApp
+
+
+export default CompletedApp;
