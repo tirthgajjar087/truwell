@@ -155,7 +155,11 @@ export const createRota = createSlice({
             state.addRota = action.payload;
         },
         getRotaDate: (state, action) => {
-            state.addRota.available_date = action.payload;
+            // state.addRota.available_date = action.payload;
+            state.addRota = {
+                ...state.addRota,
+                available_date: action.payload,
+            }
         },
         updateRotaSlots: (state, action) => {
             state.addRota = {
@@ -187,6 +191,7 @@ export const createRota = createSlice({
             )
             .addCase(getRotadateApi.fulfilled, (state, action) => {
                 state.isLoading = false;
+                return action.payload;
             }
             )
             .addCase(getRotadateApi.rejected, (state, action) => {

@@ -51,7 +51,7 @@ const Signup = () => {
                                 layout="vertical"
                                 labelCol={{ span: 30 }}
                                 wrapperCol={{ span: 13 }}
-                                style={{ maxWidth: '400px' }}
+                                style={{ maxWidth: '400px', textWrap: "wrap" }}
                                 initialValues={{ remember: true }}
                                 onFinish={onFinish}
                                 onFinishFailed={onFinishFailed}
@@ -259,7 +259,7 @@ const Signup = () => {
                     </div>
                 </div>
 
-            </div>
+            </div >
         </>
 
 

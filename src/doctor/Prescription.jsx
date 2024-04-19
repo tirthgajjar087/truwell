@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Input, Table, Layout } from 'antd';
 import moment from 'moment';
-import noDataFoundImg from "../img/no_data_found1.png"
+import noDataFoundImg from "../img/no_app_2.avif"
 import { useDispatch, useSelector } from 'react-redux';
 import { getPrescriptionApi } from '../reducer/DocPrescription';
 const { Content } = Layout;
@@ -59,12 +59,15 @@ function Prescription() {
             <Content className='p-2 m-[82px_10px_0px_5px]'>
                 <p className='text-[0.9rem]  mb-3 font-bold'>Share Prescription </p>
                 {
-                    getPres && getPres?.length <= 0 ? (
+                    Array.isArray(getPres) && getPres?.length <= 0 ? (
                         <>
-                            <div className='bg-white shadow-myshaow mt-10 text-center p-16 rounded-md'>
+                            <div className='bg-white shadow-myshaow mt-10 text-center p-32 rounded-md'>
                                 <img src={noDataFoundImg} alt="" className='w-72 h-full m-auto' />
+                                <p className='text-[1rem] font-bold'>No Prescription Provided By You</p>
                             </div>
-                        </>) : (<Table className='p-2 ' columns={columns} dataSource={getPres} pagination={pagination}
+                        </>) : (<Table
+
+                            className='p-2 ' columns={columns} dataSource={getPres} pagination={pagination}
                             loading={isLoading}
                         ></Table>)
                 }

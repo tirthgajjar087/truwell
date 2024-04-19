@@ -23,7 +23,7 @@ const initialState = {
     },
 }
 
-// export const backendURL = 'http://192.168.0.115:3000';
+
 export const backendURL = 'https://c2bb-122-170-10-87.ngrok-free.app';
 
 
@@ -39,10 +39,6 @@ const config = {
 export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thunkAPI) => {
     try {
         console.log("In login api data--:", data);
-
-
-
-
         const checkDoctor = {
             email: data.email,
             password: data.password
@@ -56,7 +52,6 @@ export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thu
                     thunkAPI.dispatch(updateLoginObj(res.data));
                     localStorage.setItem('token', res.data.data.token);
                     localStorage.setItem('user_id', res.data.data.user_id);
-
                     console.log('My data saved', res.data.status);
                     const login_success = res.data;
                     // console.log(login_success)
@@ -74,22 +69,12 @@ export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thu
             })
             .catch((error) => {
                 console.log(error.response)
-                if (error.response?.status === 400) {
-                    console.log(error)
-                    initialState.isAuthenticated = false;
-                    const errorMessage = error.response.data.message;
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user_id');
-                    message.error(errorMessage);
-                    message.duration(7);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
                 return thunkAPI.rejectWithValue(error.message);
 
             })
 
     } catch (error) {
-        // message.error('An error occurred while logging in. Please try again.');
+        message.error('An error occurred while logging in. Please try again.');
         return thunkAPI.rejectWithValue(error.message);
     }
 
@@ -129,9 +114,7 @@ export const addDoctor = createAsyncThunk('auth/addDoctor', async (data, thunkAP
             })
             .catch((error) => {
                 console.log(error)
-
                 return thunkAPI.rejectWithValue(error.message);
-
             })
     }
     catch (error) {

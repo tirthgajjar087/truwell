@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto'; // import Chart.js
+import Chart from 'chart.js/auto';
+import { Link } from 'react-router-dom';
+import defaultUserImg from "../img/user.webp";
 import { useDispatch, useSelector } from 'react-redux';
 import { FiUsers } from "react-icons/fi";
 import { LiaNotesMedicalSolid } from "react-icons/lia";
@@ -130,7 +132,7 @@ const Dashboard = () => {
 
                 </div>
 
-                <div className='grid grid-cols-3x gap-4 mt-7'>
+                <div className='grid grid-cols-3 gap-4 mt-3'>
                     <div className='bg-white p-4 rounded-lg '>
                         <h5 className='text-[1rem] text-rblue font-bold'>Monthly Appointments</h5>
                         <canvas ref={chartRef} width={400} height={400}></canvas>
@@ -138,6 +140,58 @@ const Dashboard = () => {
                     <div className='bg-white p-4 rounded-lg h-[100%] '>
                         <h5 className='text-[1rem] text-rblue font-bold'>Gender Distribution</h5>
                         <canvas ref={pieChartRef} width={10} height={100} style={{ marginLeft: "20px", height: "200px" }}></canvas>
+                    </div>
+                    <div className='bg-white p-4 rounded-lg'>
+                        <h5 className='text-[1rem] text-rblue font-bold'>Upcoming Appointment</h5>
+                        <div className='overflow-y-auto mt-4 h-[300px] pr-3'>
+                            <Link to="/upcomingapp">
+                                <p className='text-right'>View More</p>
+                            </Link>
+                            <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Tirth gajjar</p>
+                                <p className='font-bold mt-2'>20/04/2024</p>
+                                <p className='font-bold mt-2'>17:00</p>
+                            </div>
+                            <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Nivedita Hule</p>
+                                <p className='font-bold mt-2'>22/04/2024</p>
+                                <p className='font-bold mt-2'>03:00</p>
+                            </div>
+                            <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Hardik Desai</p>
+                                <p className='font-bold mt-2'>24/04/2024</p>
+                                <p className='font-bold mt-2'>11:30</p>
+                            </div> <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Bhavesh</p>
+                                <p className='font-bold mt-2'>01/05/2024</p>
+                                <p className='font-bold mt-2'>01:00</p>
+                            </div> <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Tirth gajjar</p>
+                                <p className='font-bold mt-2'>03/05/2024</p>
+                                <p className='font-bold mt-2'>22:00</p>
+                            </div> <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Tirth gajjar</p>
+                                <p className='font-bold mt-2'>03/05/2024</p>
+                                <p className='font-bold mt-2'>01:00</p>
+                            </div> <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Tirth gajjar</p>
+                                <p className='font-bold mt-2'>04/05/2024</p>
+                                <p className='font-bold mt-2'>09:00</p>
+                            </div> <div className='flex justify-cente align-center gap-4 bg-gray-100 rounded-lg py-3 px-3 mt-3'>
+                                <img src={defaultUserImg} alt="" className='w-10' />
+                                <p className='w-[100px] font-bold mt-2'>Tirth gajjar</p>
+                                <p className='font-bold mt-2'>20/04/2024</p>
+                                <p className='font-bold mt-2'>14:00</p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

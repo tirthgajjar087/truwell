@@ -8,10 +8,16 @@ const initialState = {
     upcomingPatientDet: [],
     compPatientDet: [],
     isLoading: false,
+    setMedicalHistory: {
+        name: "",
+        data: [],
+    }
+    // setMedicalHistory: []
 }
 
 export const Upcompatientdet = createAsyncThunk("fetchAppointment/getpatientdet", async (status, thunkAPI) => {
     try {
+
         console.log("Patient status: ", status);
         await axios.get(`${backendURL}/appointments`, {
             params: {
@@ -36,6 +42,35 @@ export const Upcompatientdet = createAsyncThunk("fetchAppointment/getpatientdet"
 })
 
 
+export const getMedicalHistoryApi = createAsyncThunk("fetchAppointment/getMedicalHistoryApi", async (app_id, thunkAPI) => {
+    console.log("My appointment--", app_id)
+
+    await axios.get(`${backendURL}/medical_histories`, {
+        params: {
+            appointment_id: app_id
+        },
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'AUTH_TOKEN': `${localStorage.getItem('token')}`
+        }
+    }).then((res) => {
+        console.log("In Medical History api -:", res.data.data);
+
+        if (res.data.status === 200) {
+            thunkAPI.dispatch(getMedicalHistory(res.data));
+
+        }
+        if (res.data.status === 400) {
+            const errorMessage = res.data.message;
+            message.error({
+                content: errorMessage,
+                duration: 7
+            });
+            // return thunkAPI.rejectWithValue(errorMessage);
+        }
+    })
+})
 
 export const completedpatientdet = createAsyncThunk("fetchAppointment/getpatientdet", async (status, thunkAPI) => {
     try {
@@ -73,6 +108,13 @@ export const fetchAppointment = createSlice({
         },
         getCompeletedAppointment: (state, action) => {
             state.compPatientDet = action.payload;
+        },
+        getMedicalHistory: (state, action) => {
+            console.log('action.payload', action.payload)
+            state.setMedicalHistory = {
+                name: action.payload.name,
+                data: action.payload.data
+            }
         }
     },
     extraReducers: (builder) => {
@@ -82,11 +124,10 @@ export const fetchAppointment = createSlice({
             })
             .addCase(Upcompatientdet.fulfilled, (state, action) => {
                 state.isLoading = false;
-                // state.upcomingPatientDet = action.payload;
             })
     }
 })
 
 
-export const { getUpcomingAppointment, getCompeletedAppointment } = fetchAppointment.actions;
+export const { getUpcomingAppointment, getCompeletedAppointment, getMedicalHistory } = fetchAppointment.actions;
 export default fetchAppointment.reducer;

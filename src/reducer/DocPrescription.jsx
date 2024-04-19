@@ -26,7 +26,7 @@ export const getPrescriptionApi = createAsyncThunk("myprescription/getPrescripti
             'AUTH_TOKEN': `${localStorage.getItem('token')}`
         }
     }).then((res) => {
-        console.log("In prescption api--", res.data.data);
+        console.log("In Prescption api -:", res.data.data);
         thunkAPI.dispatch(updateAllprescription(res.data.data));
         if (res.data.status === 200) {
             message.success({
@@ -38,7 +38,7 @@ export const getPrescriptionApi = createAsyncThunk("myprescription/getPrescripti
             const errorMessage = res.data.message;
             message.error({
                 content: errorMessage,
-                duration: 7 // Duration in seconds
+                duration: 7
             });
             return thunkAPI.rejectWithValue(errorMessage);
         }
@@ -78,7 +78,7 @@ export const addPrescriptionApi = createAsyncThunk("myprescription/addPrescripti
                 const errorMessage = res.data.message;
                 message.error({
                     content: errorMessage,
-                    duration: 7 // Duration in seconds
+                    duration: 7
                 });
                 return thunkAPI.rejectWithValue(errorMessage);
             }
@@ -100,8 +100,8 @@ export const docPrescription = createSlice({
             // state.prescriptions.push(action.payload);
         },
         updateAllprescription: (state, action) => {
-            console.log('action.payload', action.payload)
             state.getPres = action.payload;
+            console.log('action.payload', action.payload)
             // console.log('Worked', state.getPres);
         }
     }

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import * as moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux';
-import noDataFoundImg from "../img/no_data_found1.png"
+import noDataFoundImg from "../img/no_appointment_found.jpg"
 import { Button, Modal, Form, Input, Select, Layout, Tabs, DatePicker, TimePicker, message } from 'antd';
 import { getRotaSlotsApi, getRotadateApi } from '../reducer/RotaReducer';
 import { rotaApi } from '../reducer/RotaReducer';
-
+import noAppImg from "../img/no-slots.svg"
 import { useParams } from 'react-router';
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -248,7 +248,8 @@ function Rota() {
                     addRota?.available_date?.length <= 0 ? (
                         <>
                             <div className='bg-white shadow-myshaow mt-10 text-center p-16 rounded-md'>
-                                <img src={noDataFoundImg} alt="" className='w-72 h-full m-auto' />
+                                <img src={noDataFoundImg} alt="" className='w-[22rem] h-full m-auto' />
+                                <p className='text[1rem] font-bold'>No Rota date & time Found</p>
                             </div>
                         </>
                     ) : (
@@ -256,29 +257,31 @@ function Rota() {
                             <Tabs defaultActiveKey="1" tabPosition="top" onChange={(key) => handleTabChange(key, addRota?.available_date[key - 1])}>
                                 {addRota?.available_date?.map((date, index) => (
                                     <Tabs.TabPane key={index + 1} tab={date}>
-                                        {isLoading ? (<p>Loading...</p>) : (
-                                            <div className='grid grid-cols-8 gap-7 overflow-y-scroll h-[200] py-3 px-2'>
-                                                {Array.isArray(addRota.available_slots) && addRota?.available_slots.length > 0 ? (
-                                                    addRota?.available_slots.map((slot, slotIndex) => {
-                                                        // console.log(slot);
-                                                        return (
-                                                            <Button key={slotIndex} className='flex align-center gap-1 justify-center'>
-                                                                {moment(slot.start_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')} - {moment(slot.end_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')}
-                                                            </Button>
+                                        {
+                                            isLoading ? (<p>Loading...</p>) : (
+                                                addRota?.available_slots.length <= 0 ? (
+                                                    <div className='text-center mt-14'>
+                                                        <img src={noAppImg} alt="" className='w-[90px] m-auto' />
+                                                        <p className='mt-4 font-bold text-[1rem]'>No Rota available </p>
+                                                    </div>) : (
+                                                    <div className='grid grid-cols-8 gap-7 overflow-y-scroll h-[200] py-3 px-2'>
+                                                        {
+                                                            addRota?.available_slots.map((slot, slotIndex) => {
+                                                                // console.log(slot);
+                                                                return (
+                                                                    <Button key={slotIndex} className='flex align-center gap-1 justify-center' style={{ backgroundColor: slot.status === 'booked' ? "green" : "white", color: slot.status === 'booked' ? "white" : "black", fontWeight: slot.status === 'booked' ? "600" : "500", border: slot.status === 'booked' ? 'none' : '1px solid lightgray' }}>
+                                                                        {moment(slot.start_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')} - {moment(slot.end_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')}
+                                                                    </Button>
 
-                                                        )
-                                                    })
-                                                )
+                                                                )
+                                                            })
 
-                                                    : (
-                                                        <div>
-                                                            <p>No Slots available</p>
-                                                            {/* <img src={noDataFoundImg} alt="" className='w-96 h-full m-auto' /> */}
-                                                        </div>
-                                                    )}
+                                                        }
 
-                                            </div>
-                                        )
+                                                    </div>)
+
+
+                                            )
                                         }
 
                                     </Tabs.TabPane>

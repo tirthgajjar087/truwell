@@ -3,6 +3,8 @@ import { Button, Modal, Form, Input, Select, Layout, message, Upload, Table } fr
 import { InboxOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';
+import noDataFoundImg from "../img/no_app_available11.jpg"
+
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { completedpatientdet } from '../reducer/AppointmentUpCom';
@@ -199,209 +201,221 @@ function CompletedApp() {
             <Content className='p-2 m-[82px_10px_0px_5px]'>
 
                 <p className='text-[0.9rem]  mb-3 font-bold'>Completed Appointment</p>
-                <Table className='p-2 ' columns={columns} dataSource={compPatientDet} pagination={pagination}></Table>
+                {
+                    compPatientDet && compPatientDet?.length === 0 ? (
+                        <div className='bg-white shadow-myshaow mt-10 text-center p-28 rounded-md'>
+                            <img src={noDataFoundImg} alt="" className='w-72 h-full m-auto' />
+                            <p className='text-[1rem] font-bold'>No Completed Appointments Available</p>
+                        </div>) : (
+                        <>
+                            <Table className='p-2 ' columns={columns} dataSource={compPatientDet} pagination={pagination}></Table>
+                            <Modal
+
+                                title={`Share Prescription `}
+
+                                open={isModalOpen} onOk={handleOk} onCancel={handleCancel} style={{ top: 20 }} maskClosable={false} okText="Submit">
+                                <Form
+                                    layout='vertical'
+                                    form={form}
+                                    className='prescription_form'
+                                    name="prescriptionForm"
+                                    onValuesChange={handleFormChange}
+                                >
+                                    <p className='text-[0.9rem] text-center my-4 font-bold text-sky-500'>
+                                        {`Appointment ID: ${app_id} - Appointment Date: ${moment(Array.isArray(compPatientDet) && compPatientDet?.find(patient => patient?.appointment_id === app_id)?.appointment_date).format("DD/MM/YYYY")}`}
 
 
-                <Modal
+                                    </p>
 
-                    title={`Share Prescription `}
+                                    <Form.Item
+                                        name="file"
+                                        label="Upload File"
+                                    >
 
-                    open={isModalOpen} onOk={handleOk} onCancel={handleCancel} style={{ top: 20 }} maskClosable={false} okText="Submit">
-                    <Form
-                        layout='vertical'
-                        form={form}
-                        className='prescription_form'
-                        name="prescriptionForm"
-                        onValuesChange={handleFormChange}
-                    >
-                        <p className='text-[0.9rem] text-center my-4 font-bold text-sky-500'>
-                            {`Appointment ID: ${app_id} - Appointment Date: ${moment(compPatientDet?.find(patient => patient?.appointment_id === app_id)?.appointment_date).format("DD/MM/YYYY")}`}
+                                        <Dragger {...props} className="file_upload" name='file'>
+                                            <p className="ant-upload-drag-icon">
+                                                <InboxOutlined />
+                                            </p>
+                                            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                                            <p className="ant-upload-hint">
+                                                Support for a single or bulk upload.
 
+                                            </p>
+                                        </Dragger>
+                                    </Form.Item>
+                                    <div>
 
-                        </p>
+                                        <Form.Item
+                                            name="title"
+                                            label="Title"
+                                            className='mt-5'
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please enter title !'
+                                                }
+                                            ]}
 
-                        <Form.Item
-                            name="file"
-                            label="Upload File"
-                        >
+                                        >
+                                            <Input placeholder='Enter Title' className='focus-within:shadow-none    ' />
+                                        </Form.Item>
+                                        <Form.Item
+                                            // name="title"
+                                            label="Patient Name"
+                                            className='mt-5'
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please enter title !'
+                                                }
+                                            ]}
+                                        >
+                                            <Input placeholder='Enter patinet ' className='focus-within:shadow-none ' value={patientName} readOnly />
+                                        </Form.Item>
 
-                            <Dragger {...props} className="file_upload" name='file'>
-                                <p className="ant-upload-drag-icon">
-                                    <InboxOutlined />
-                                </p>
-                                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                                <p className="ant-upload-hint">
-                                    Support for a single or bulk upload.
+                                    </div>
 
-                                </p>
-                            </Dragger>
-                        </Form.Item>
-                        <div>
+                                    <div>
+                                        {/* <Form.Item
+             name="patientName"
+             label='Patient Name'
 
-                            <Form.Item
-                                name="title"
-                                label="Title"
-                                className='mt-5'
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please enter title !'
-                                    }
-                                ]}
+             rules={[{
+                 required: true,
+                 message: 'Please enter patient name !'
+             }]}
+         >
+             <Select
+                 name=''
+                 mode="multiple"
+                 allowClear
+                 style={{
+                     width: '100%',
+                 }}
+                 placeholder="Please select patient name"
+                 // defaultValue={['a10', 'c12']}
+                 onChange={(val) => {
+                     setFormData(prevState => ({
+                         ...prevState,
+                         patientName: val || [],
+                     }))
+                 }}
+                 options={options}
+             />
 
-                            >
-                                <Input placeholder='Enter Title' className='focus-within:shadow-none    ' />
-                            </Form.Item>
-                            <Form.Item
-                                // name="title"
-                                label="Patient Name"
-                                className='mt-5'
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please enter title !'
-                                    }
-                                ]}
-                            >
-                                <Input placeholder='Enter patinet ' className='focus-within:shadow-none ' value={patientName} readOnly />
-                            </Form.Item>
+         </Form.Item> */}
+                                    </div>
 
-                        </div>
+                                    <div className='grid grid-cols-2 gap-5'>
+                                        <Form.Item
+                                            name="prescription_type"
+                                            label="Type"
+                                            rules={[{ required: true, message: 'Please Select Type!' }]}
+                                        >
+                                            <Select onChange={(value) => {
+                                                // setFormData((prevState) => ({
+                                                //     ...prevState,
+                                                //     Type: value,
+                                                // }))
+                                            }} >
+                                                <Option value="prescription">Prescription</Option>
+                                                <Option value="sick_note">Sick Note</Option>
+                                            </Select>
+                                        </Form.Item>
 
-                        <div>
-                            {/* <Form.Item
-                                 name="patientName"
-                                 label='Patient Name'
- 
-                                 rules={[{
-                                     required: true,
-                                     message: 'Please enter patient name !'
-                                 }]}
-                             >
-                                 <Select
-                                     name=''
-                                     mode="multiple"
-                                     allowClear
-                                     style={{
-                                         width: '100%',
-                                     }}
-                                     placeholder="Please select patient name"
-                                     // defaultValue={['a10', 'c12']}
-                                     onChange={(val) => {
-                                         setFormData(prevState => ({
-                                             ...prevState,
-                                             patientName: val || [],
-                                         }))
-                                     }}
-                                     options={options}
-                                 />
- 
-                             </Form.Item> */}
-                        </div>
+                                        <Form.Item
+                                            name="medicine"
+                                            label="Medicine"
 
-                        <div className='grid grid-cols-2 gap-5'>
-                            <Form.Item
-                                name="prescription_type"
-                                label="Type"
-                                rules={[{ required: true, message: 'Please Select Type!' }]}
-                            >
-                                <Select onChange={(value) => {
-                                    // setFormData((prevState) => ({
-                                    //     ...prevState,
-                                    //     Type: value,
-                                    // }))
-                                }} >
-                                    <Option value="prescription">Prescription</Option>
-                                    <Option value="sick_note">Sick Note</Option>
-                                </Select>
-                            </Form.Item>
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please enter medicine !'
+                                                }
+                                            ]}
 
-                            <Form.Item
-                                name="medicine"
-                                label="Medicine"
+                                        >
+                                            <Input placeholder='Enter medicine' className='focus-within:shadow-none    ' />
+                                        </Form.Item>
 
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please enter medicine !'
-                                    }
-                                ]}
-
-                            >
-                                <Input placeholder='Enter medicine' className='focus-within:shadow-none    ' />
-                            </Form.Item>
-
-                        </div>
+                                    </div>
 
 
-                        <div className='grid grid-cols-2 gap-5'>
+                                    <div className='grid grid-cols-2 gap-5'>
 
-                            <Form.Item
-                                name="dosage"
-                                label="Dosage"
+                                        <Form.Item
+                                            name="dosage"
+                                            label="Dosage"
 
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please enter dosage !'
-                                    }
-                                ]}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please enter dosage !'
+                                                }
+                                            ]}
 
-                            >
-                                <Input placeholder='Enter dosage' className='focus-within:shadow-none    ' />
-                            </Form.Item>
-                            <Form.Item
-                                name="quantity"
-                                label="quantity"
+                                        >
+                                            <Input placeholder='Enter dosage' className='focus-within:shadow-none    ' />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="quantity"
+                                            label="quantity"
 
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please enter quantity !'
-                                    },
-                                    // required number 
-                                    {
-                                        pattern: /^[0-9]+$/,
-                                        message: 'Please enter number'
-                                    }
-
-
-
-                                ]}
-
-                            >
-                                <Input placeholder='Enter quantity' className='focus-within:shadow-none    ' />
-                            </Form.Item>
-
-
-                        </div>
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please enter quantity !'
+                                                },
+                                                // required number 
+                                                {
+                                                    pattern: /^[0-9]+$/,
+                                                    message: 'Please enter number'
+                                                }
 
 
 
+                                            ]}
 
-                        {/* {type === 'Sick_note' ? (
-                             <Form.Item
-                                 name="instruction"
-                                 label="Instruction"
-                                 rules={[{ required: false, message: 'Please enter Instruction!' }]}
-                             >
-                                 <TextArea rows={4} />
-                             </Form.Item>
-                         ) : ""} */}
-                        {/* <Input /> */}
-
-                        {/* <Form.Item name='date'></Form.Item> */}
+                                        >
+                                            <Input placeholder='Enter quantity' className='focus-within:shadow-none    ' />
+                                        </Form.Item>
 
 
-                        {/* <Form.Item
-                                 name="frequency"
-                                 label="Frequency"
-                                 rules={[{ required: true, message: 'Please enter frequency!' }]}
-                             >
-                                 <Input />
-                             </Form.Item> */}
-                    </Form>
-                </Modal>
+                                    </div>
+
+
+
+
+                                    {/* {type === 'Sick_note' ? (
+         <Form.Item
+             name="instruction"
+             label="Instruction"
+             rules={[{ required: false, message: 'Please enter Instruction!' }]}
+         >
+             <TextArea rows={4} />
+         </Form.Item>
+     ) : ""} */}
+                                    {/* <Input /> */}
+
+                                    {/* <Form.Item name='date'></Form.Item> */}
+
+
+                                    {/* <Form.Item
+             name="frequency"
+             label="Frequency"
+             rules={[{ required: true, message: 'Please enter frequency!' }]}
+         >
+             <Input />
+         </Form.Item> */}
+                                </Form>
+                            </Modal>
+
+                        </>
+                    )
+                }
+
+
+
 
             </Content>
         </div >

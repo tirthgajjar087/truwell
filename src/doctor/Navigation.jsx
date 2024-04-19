@@ -8,7 +8,6 @@ import {
 import mainLogo from "../img/logo.png"
 import collapsedLogo from "../img/collapsed.png";
 import defaultUserImg from "../img/user.webp";
-
 import { IoMdLogOut } from "react-icons/io";
 import { MdOutlineDashboard } from "react-icons/md";
 import { IoSearchSharp } from "react-icons/io5";
@@ -97,21 +96,12 @@ const Navigation = () => {
                                 ]
                             },
                             {
+
                                 key: '4',
+
                                 icon: <BsPrescription style={{ fontSize: 22 }} />,
-                                label: (<Link>Prescription</Link>),
-                                children: [
-                                    {
-                                        key: '4-1',
-                                        label: (<Link to="/prescription">Prescription</Link>),
-                                        onClick: () => { }
-                                    },
-                                    {
-                                        key: '4-3',
-                                        label: (<Link to="/medicalhistory">Medical History</Link>),
-                                        onClick: () => { }
-                                    },
-                                ]
+                                label: (<Link to="/prescription">Prescription</Link>),
+
                             },
                             {
                                 key: '5',

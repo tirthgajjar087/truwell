@@ -39,7 +39,7 @@ function App() {
               <Route path="/doctorprofile/:id" element={<DoctorProfile />} />
               <Route path="/upcomingapp" element={<UpcomingApp />} />
               <Route path="/completedapp" element={<CompletedApp />} />
-              <Route path="/medicalhistory" element={<MedicalHistory />} />
+              <Route path="/medicalhistory/:app_id" element={<MedicalHistory />} />
             </Route>
           ) : (
             <>
