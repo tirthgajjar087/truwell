@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import defaultUserImg from "../img/user.webp";
-
 import { Button, Form, Input, Select, Layout } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { DatePicker } from 'antd';
@@ -26,6 +25,7 @@ function DoctorProfile() {
 
 
 
+
     function handleChange(e) {
         console.log(e.target.files);
         setFile(URL.createObjectURL(e.target.files[0]));
@@ -44,6 +44,11 @@ function DoctorProfile() {
     useEffect(() => {
         dispatch(getDocDetails(id));
     }, [dispatch, id, getDocDetails]);
+
+
+
+
+
 
 
     useEffect(() => {
@@ -69,6 +74,10 @@ function DoctorProfile() {
             });
         }
     }, [form, docDetails]);
+
+
+
+
     return (
         <>
 
@@ -111,7 +120,7 @@ function DoctorProfile() {
                                         </div>
                                         <div className='m-auto'>
 
-                                            <img src={file ? file : defaultUserImg} className='w-[100px] h-[100px] rounded-xl m-auto' />
+                                            <img src={file ? file : defaultUserImg} className='w-[100px] h-[100px] rounded-xl m-auto' alt='user image' />
 
 
                                             <input type="file" onChange={handleChange} className='m-auto' />
@@ -271,9 +280,7 @@ function DoctorProfile() {
                                                     {
                                                         required: true,
                                                         message: 'Doctor Fee is required!',
-                                                        validateTrigger: 'onBlur',
-                                                        validateStatus: 'error',
-                                                        help: 'Doctor  Fee is required.',
+
                                                     },
                                                 ]}
                                             >

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Layout } from 'antd';
+import { Layout } from 'antd';
 import { useParams } from 'react-router';
-import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { Upcompatientdet, getMedicalHistoryApi } from '../reducer/AppointmentUpCom';
 const { Content } = Layout;
@@ -16,7 +15,6 @@ function MedicalHistory() {
 
     console.log("medical history page", setMedicalHistory);
     useEffect(() => {
-
         dispatch(getMedicalHistoryApi(app_id))
     }, []);
 
@@ -60,7 +58,7 @@ function MedicalHistory() {
                                                 </div>
                                             </div>
 
-                                            <div className='mt-5 w-[50px]'>
+                                            <div className='mt-5 w-[60px]'>
                                                 <h5 className='text-[0.9rem] font-bold text-black'>Status</h5>
                                                 <p className='mt-1 px-2 py-1 rounded-lg text-[0.9rem] text-gray-600' style={{ backgroundColor: item.status === 'past' ? "red" : "green", color: "white", fontWeight: 600 }}>{item.status}</p>
 

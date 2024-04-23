@@ -3,29 +3,10 @@ import { useParams } from 'react-router';
 import { backendURL } from "./AuthDoctor";
 import axios from 'axios';
 import { message } from 'antd';
-
+import { handleApiError } from "./AuthDoctor";
 
 const initialState = {
-    docDetails: {
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone_no: "",
-        password: "",
-        confirm_password: "",
-        gender: "",
-        role: "",
-        dob: "",
-        language: "",
-        specialization: "",
-        about: "",
-        hospital_name: "",
-        hospital_address: "",
-        city: "",
-        state: "",
-        country: "",
-        pincode: "",
-    },
+    docDetails: {},
     isLoading: false
 }
 export const config = {
@@ -71,8 +52,8 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
             doctor_info: {
                 language: data.language.join(','),
                 specialization: data.specialization,
-                about: data.about,
                 charges: data.charges,
+                about: data.about,
             },
             hospital_info: {
                 name: data.hospital_name,
@@ -94,12 +75,7 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
                     message.success(updateEdit_message.message)
                     thunkAPI.dispatch(updateEditprofile(res.data))
                 }
-                if (res.data.status === 400) {
-                    const errorMessage = res.data.message;
-                    message.error(errorMessage);
-                    message.duration(7);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+                handleApiError(res.data);
             })
             .catch((err) => {
                 console.log(err)

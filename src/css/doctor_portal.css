@@ -81,3 +81,16 @@ body {
 .ant-picker-ok button {
   background-color: #2744DF;
 }
+
+
+table thead tr th {
+  color: white !important;
+  /* border-radius: 2px; */
+  background-color: rgb(3, 3, 153) !important;
+}
+
+table tbody tr td {
+
+  /* border-right: 0.1px solid lightgray; */
+  border-bottom: 0.1px insets lightgray !important;
+}

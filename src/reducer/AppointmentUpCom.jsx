@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from 'antd';
 import { backendURL } from "./AuthDoctor";
 import axios from 'axios';
-
+import { handleApiError } from "./AuthDoctor";
 
 const initialState = {
     upcomingPatientDet: [],
@@ -12,7 +12,6 @@ const initialState = {
         name: "",
         data: [],
     }
-    // setMedicalHistory: []
 }
 
 export const Upcompatientdet = createAsyncThunk("fetchAppointment/getpatientdet", async (status, thunkAPI) => {
@@ -34,6 +33,7 @@ export const Upcompatientdet = createAsyncThunk("fetchAppointment/getpatientdet"
             thunkAPI.dispatch(getUpcomingAppointment(res.data.data));
             if (res.data.status === 200) {
             }
+            handleApiError(res.data);
         })
     }
     catch (err) {
@@ -61,14 +61,7 @@ export const getMedicalHistoryApi = createAsyncThunk("fetchAppointment/getMedica
             thunkAPI.dispatch(getMedicalHistory(res.data));
 
         }
-        if (res.data.status === 400) {
-            const errorMessage = res.data.message;
-            message.error({
-                content: errorMessage,
-                duration: 7
-            });
-            // return thunkAPI.rejectWithValue(errorMessage);
-        }
+        handleApiError(res.data);
     })
 })
 
@@ -89,6 +82,7 @@ export const completedpatientdet = createAsyncThunk("fetchAppointment/getpatient
             thunkAPI.dispatch(getCompeletedAppointment(res.data.data));
             if (res.data.status === 200) {
             }
+            handleApiError(res.data);
         })
     }
     catch (err) {

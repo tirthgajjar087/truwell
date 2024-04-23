@@ -2,21 +2,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { message } from 'antd';
 import { backendURL } from "./AuthDoctor";
 import axios from 'axios';
-
+import { handleApiError } from './AuthDoctor';
 
 const initialState = {
     isLoading: false,
     addRota: {
-        start_time: "",
-        end_time: "",
-        for_date: "",
-        duration: "",
-        user_id: "",
         available_slots: [],
         available_date: [],
-    },
-    doctor_info: {
-        charges: "",
     },
 }
 
@@ -45,7 +37,13 @@ export const rotaApi = createAsyncThunk("newRota/rotaApi", async (data, thunkAPI
         }
 
         console.log("Post add rota  Reducer--:", SendRotaApi)
-        await axios.post(`${backendURL}/doctor_availabilities_create`, SendRotaApi, config_header)
+        await axios.post(`${backendURL}/doctor_availabilities_create`, SendRotaApi, {
+            headers: {
+                'ngrok-skip-browser-warning': 'true',
+                'Content-Type': 'application/json',
+                'AUTH_TOKEN': `${localStorage.getItem('token')}`
+            },
+        })
             .then((res) => {
                 console.log("In Rota data-:", res)
                 if (res.data.status === 200) {
@@ -56,14 +54,7 @@ export const rotaApi = createAsyncThunk("newRota/rotaApi", async (data, thunkAPI
                         duration: 7 // Duration in seconds
                     });
                 }
-                if (res.data.status === 400) {
-                    const errorMessage = res.data.message;
-                    message.error({
-                        content: errorMessage,
-                        duration: 7 // Duration in seconds
-                    });
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+                handleApiError(res.data);
             })
     }
     catch (error) {
@@ -95,14 +86,7 @@ export const getRotadateApi = createAsyncThunk("newRota/getRotaApi", async (id, 
                     });
                     thunkAPI.dispatch(updateRotaSlots(res.data.time_slot));
                 }
-                if (res.data.status === 400) {
-                    const errorMessage = res.data.message;
-                    message.error({
-                        content: errorMessage,
-                        duration: 7 // Duration in seconds
-                    });
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+                handleApiError(res.data);
             })
             .catch((err) => {
                 console.log("Error in get rota date API", err)
@@ -137,6 +121,7 @@ export const getRotaSlotsApi = createAsyncThunk(
                     if (res.data.status === 200) {
                         thunkAPI.dispatch(updateRotaSlots(res.data.data));
                     }
+                    handleApiError(res.data);
                 })
 
         } catch (error) {
@@ -178,13 +163,13 @@ export const createRota = createSlice({
             )
             .addCase(rotaApi.fulfilled, (state, action) => {
                 state.isLoading = false;
+
             }
             )
             .addCase(rotaApi.rejected, (state, action) => {
                 state.isLoading = false;
             }
             )
-
             .addCase(getRotadateApi.pending, (state) => {
                 state.isLoading = true;
             }

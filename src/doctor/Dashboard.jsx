@@ -84,7 +84,6 @@ const Dashboard = () => {
 
     return (
         <>
-
             <Content className='p-2 m-[82px_10px_0px_14px]'>
                 <p className='text-[0.9rem] mb-3 font-bold'>Dashboard</p>
                 <div className='grid grid-cols-4 gap-4'>
@@ -143,7 +142,7 @@ const Dashboard = () => {
                     </div>
                     <div className='bg-white p-4 rounded-lg'>
                         <h5 className='text-[1rem] text-rblue font-bold'>Upcoming Appointment</h5>
-                        <div className='overflow-y-auto mt-4 h-[300px] pr-3'>
+                        <div className='overflow-y-auto mt-4 h-[310px] pr-3'>
                             <Link to="/upcomingapp">
                                 <p className='text-right'>View More</p>
                             </Link>

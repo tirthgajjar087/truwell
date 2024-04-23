@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { backendURL } from "./AuthDoctor";
 import { message } from "antd";
+import { handleApiError } from "./AuthDoctor";
 
 
 const initialState = {
@@ -27,21 +28,24 @@ export const getPrescriptionApi = createAsyncThunk("myprescription/getPrescripti
         }
     }).then((res) => {
         console.log("In Prescption api -:", res.data.data);
-        thunkAPI.dispatch(updateAllprescription(res.data.data));
+
+        let data = res.data.data.map((singlePresc) => {
+            const { prescription, patient_name } = singlePresc
+            return {
+                ...prescription[0],
+                patient_name
+            }
+        });
+
+        console.log('data=>', data)
+        thunkAPI.dispatch(getAllprescription(data));
         if (res.data.status === 200) {
             message.success({
                 content: res.data.message,
                 duration: 7
             });
         }
-        if (res.data.status === 400) {
-            const errorMessage = res.data.message;
-            message.error({
-                content: errorMessage,
-                duration: 7
-            });
-            return thunkAPI.rejectWithValue(errorMessage);
-        }
+        handleApiError(res.data);
     })
 })
 
@@ -74,15 +78,61 @@ export const addPrescriptionApi = createAsyncThunk("myprescription/addPrescripti
                     duration: 7
                 });
             }
-            if (res.data.status === 400) {
-                const errorMessage = res.data.message;
-                message.error({
-                    content: errorMessage,
+            handleApiError(res.data);
+        })
+})
+
+
+export const EditPrescriptionApi = createAsyncThunk("myprescription/EditPrescriptionApi", async (prescription, thunkAPI) => {
+
+    console.log(thunkAPI.getState());
+    console.log("Edit Prescription", prescription);
+    let prescData = thunkAPI.getState().myprescription.prescriptions;
+    let appointment_id = prescData.id;
+
+    const prescriptionData = {
+        update_prescription: {
+            title: prescription.title,
+            dosage: prescription.dosage,
+            quantity: prescription.quantity,
+            medicine: prescription.medicine,
+        },
+        instructions: prescription.instruction,
+    }
+    // console.log("No data", prescriptionData);
+
+    await axios.patch(`${backendURL}/prescriptions/${appointment_id}`, prescriptionData, config)
+        .then((res) => {
+            console.log("In prescption api--", res.data);
+            if (res.data.status === 200) {
+                thunkAPI.dispatch(EditPrescription(res.data.data));
+                message.success({
+                    content: res.data.message,
                     duration: 7
                 });
-                return thunkAPI.rejectWithValue(errorMessage);
             }
+            handleApiError(res.data);
+        })
+})
+export const DeletePrescriptionApi = createAsyncThunk("myprescription/DeletePrescriptionApi", async (prescription, thunkAPI) => {
 
+    console.log(thunkAPI.getState());
+    console.log("Edit Prescription", prescription);
+    let prescData = thunkAPI.getState().myprescription.prescriptions;
+    let appointment_id = prescData.id;
+
+
+    await axios.delete(`${backendURL}/prescriptions/${appointment_id}`, config)
+        .then((res) => {
+            console.log("In prescption api--", res.data);
+            if (res.data.status === 200) {
+                thunkAPI.dispatch(deletePrescription(res.data.data));
+                message.success({
+                    content: res.data.message,
+                    duration: 7
+                });
+            }
+            handleApiError(res.data);
         })
 })
 
@@ -96,16 +146,26 @@ export const docPrescription = createSlice({
                 ...state.prescriptions,
                 ...action.payload
             }
-            // state.prescriptions = action.payload;
-            // state.prescriptions.push(action.payload);
         },
-        updateAllprescription: (state, action) => {
+        getAllprescription: (state, action) => {
             state.getPres = action.payload;
             console.log('action.payload', action.payload)
-            // console.log('Worked', state.getPres);
+        },
+        EditPrescription: (state, action) => {
+            state.prescriptions = {
+                ...state.prescriptions,
+                ...action.payload
+            }
+
+        },
+        deletePrescription: (state, action) => {
+            state.prescriptions = {
+                ...state.prescriptions,
+                ...action.payload
+            }
         }
     }
 })
 
-export const { addPrescription, updateAllprescription } = docPrescription.actions;
+export const { addPrescription, getAllprescription, EditPrescription, deletePrescription } = docPrescription.actions;
 export default docPrescription.reducer;

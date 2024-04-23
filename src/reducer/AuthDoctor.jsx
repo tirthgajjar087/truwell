@@ -3,6 +3,15 @@ import axios from 'axios';
 import { message } from 'antd';
 
 
+export const backendURL = 'https://c2bb-122-170-10-87.ngrok-free.app';
+
+export const handleApiError = (error) => {
+    if (error.status === 400) {
+        console.log(error);
+        message.error(error.message)
+    }
+}
+
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: !!localStorage.getItem('token') || false,
@@ -24,16 +33,12 @@ const initialState = {
 }
 
 
-export const backendURL = 'https://c2bb-122-170-10-87.ngrok-free.app';
-
 
 const config = {
     headers: {
         'Content-Type': 'application/json',
     },
 }
-
-
 
 //Login APi
 export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thunkAPI) => {
@@ -42,9 +47,7 @@ export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thu
         const checkDoctor = {
             email: data.email,
             password: data.password
-
         }
-
         await axios.post(`${backendURL}/users/log_in`, checkDoctor, config)
             .then((res) => {
                 if (res.data.status === 200) {
@@ -53,19 +56,12 @@ export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thu
                     localStorage.setItem('token', res.data.data.token);
                     localStorage.setItem('user_id', res.data.data.user_id);
                     console.log('My data saved', res.data.status);
-                    const login_success = res.data;
-                    // console.log(login_success)
-                    message.success(login_success.message)
+                    message.success(res.data.message)
                     message.duration(7);
-                    // initialState.isAuthenticated = true;
                 }
 
-                if (res.data.status === 400) {
-                    const errorMessage = res.data.message;
-                    message.error(errorMessage);
-                    message.duration(7);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+                handleApiError(res.data);
+
             })
             .catch((error) => {
                 console.log(error.response)
@@ -101,16 +97,10 @@ export const addDoctor = createAsyncThunk('auth/addDoctor', async (data, thunkAP
                     thunkAPI.dispatch(updateSignUpObj(res.data))
                     localStorage.setItem('token', res.data.data.token);
                     localStorage.setItem('user_id', res.data.data.id);
-                    const data_message = res.data;
-                    message.success(data_message.message);
+                    message.success(res.data.message);
                     message.duration(5);
                 }
-                if (res.data.status === 400) {
-                    const errorMessage = res.data.message;
-                    message.error(errorMessage);
-                    message.duration(5);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+                handleApiError(res.data);
             })
             .catch((error) => {
                 console.log(error)
@@ -123,7 +113,7 @@ export const addDoctor = createAsyncThunk('auth/addDoctor', async (data, thunkAP
 
 });
 
-//LOGOUT API
+//Logout API
 export const logoutAPi = createAsyncThunk('auth/logoutAPi', async (data, thunkAPI) => {
     try {
         console.log(data);
@@ -140,27 +130,14 @@ export const logoutAPi = createAsyncThunk('auth/logoutAPi', async (data, thunkAP
                     localStorage.removeItem('token');
                     localStorage.removeItem('user_id');
                     localStorage.removeItem('activeKey');
-                    const logout_success = res.data;
-                    message.success(logout_success.message);
+                    message.success(res.data.message);
                     message.duration(5);
                 }
-
-                if (res.data.status === 400) {
-                    const errorMessage = res.data.message;
-                    message.error(errorMessage);
-                    message.duration(5);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
-
+                handleApiError(res.data);
             })
             .catch((error) => {
                 console.log(error)
-                if (error.response?.status === 400) {
-                    const errorMessage = error.response.data.message;
-                    message.error(errorMessage);
-                    message.duration(7);
-                    return thunkAPI.rejectWithValue(errorMessage);
-                }
+
                 return thunkAPI.rejectWithValue(error.message);
 
             })

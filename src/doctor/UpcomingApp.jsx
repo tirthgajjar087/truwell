@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-// import { Button, Input, Table, Layout } from 'antd';
 import { Button, Modal, Form, Input, Select, Layout, message, Upload, Table } from 'antd';
 import { Link } from 'react-router-dom';
+import { TbEyeShare } from "react-icons/tb";
 import moment from 'moment';
+import { HiOutlineInboxArrowDown } from "react-icons/hi2";
 import noDataFoundImg from "../img/no_app_available11.jpg"
-
-import { ClockCircleOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Upcompatientdet, getMedicalHistoryApi } from '../reducer/AppointmentUpCom';
-const { Dragger } = Upload;
 const { Content } = Layout;
-const { Option } = Select;
 
 function UpcomingApp() {
     const { upcomingPatientDet, isLoading } = useSelector((state) => state.fetchAppointment);
@@ -22,7 +19,7 @@ function UpcomingApp() {
 
     useEffect(() => {
         dispatch(Upcompatientdet());
-    }, [dispatch]);
+    }, [Upcompatientdet]);
 
     console.log("uo", upcomingPatientDet)
 
@@ -36,38 +33,12 @@ function UpcomingApp() {
         // dispatch(addPrescription({ appointment_id: appointment_id }))
     };
 
-    // const handleOk = () => {
-    //     form
-    //         .validateFields()
-    //         .then(values => {
-    //             console.log('Received values--:', values);
-
-    //             // dispatch(addPrescriptionApi({ ...values }))
-
-    //             setIsModalOpen(false);
-    //             form.resetFields();
-
-    //             // console.log('Form values after reset:', form.getFieldsValue());
-    //         })
-    //         .catch(errorInfo => {
-    //             console.log('Validation failed:', errorInfo);
-    //         })
-
-    // };
 
     const handleCancel = () => {
         setIsModalOpen(false);
         form.resetFields();
         console.log('Form values after cancel:', form.getFieldsValue());
     };
-
-    const handleFormChange = (changedValues, allValues) => {
-        // console.log(changedValues);
-    };
-
-
-
-
 
 
 
@@ -119,22 +90,28 @@ function UpcomingApp() {
             title: "Status",
             dataIndex: "appointment_status",
             render: (text) => {
-                let backgroundColor, textColor;
-                if (text.toLowerCase() === "upcoming") {
-                    backgroundColor = "blue";
-                    textColor = "white";
-                } else if (text.toLowerCase() === "progress") {
-                    backgroundColor = "red";
-                    textColor = "white";
-                } else {
-                    backgroundColor = "inherit";
-                    textColor = "inherit";
-                }
+                // let backgroundColor, textColor;
+                // if (text.toLowerCase() === "upcoming") {
+                //     backgroundColor = "blue";
+                //     textColor = "white";
+                // } else if (text.toLowerCase() === "progress") {
+                //     backgroundColor = "red";
+                //     textColor = "white";
+                // } else {
+                //     backgroundColor = "inherit";
+                //     textColor = "inherit";
+                // }
+                // return (
+                //     <span style={{ backgroundColor, color: textColor, padding: '3px 6px', borderRadius: '3px' }}>
+                //         {text}
+                //     </span>
+                // );
                 return (
-                    <span style={{ backgroundColor, color: textColor, padding: '3px 6px', borderRadius: '3px' }}>
-                        {text}
+                    <span className={`${text === 'upcoming' ? 'bg-yellow-400' : "bg-red-500"} text-[0.8rem] text-black p-2 flex font-bold rounded-lg`}>
+                        {text === 'upcoming' ? 'Upcoming' : 'Progress'}
+                        <HiOutlineInboxArrowDown className='text-[1.1rem] ml-2 mt-[1.3px] text-gold-500' />
                     </span>
-                );
+                )
             },
         },
         {
@@ -149,7 +126,8 @@ function UpcomingApp() {
                             <Button type=""
                                 // onClick={() => showModal(record.appointment_id, record.first_name)}
                                 className='bg-rblue mr-5 text-white text-[0.8rem] focus-within:bg-rblue font-bold px-5 py-1 flex align-center'>
-                                <span>View Medical History</span>
+                                <TbEyeShare className='text-[1.1rem] mr-2 mt-[1.3px]' />
+                                <span>Medical History </span>
                             </Button>
                         </Link>
                     </div>
@@ -170,7 +148,12 @@ function UpcomingApp() {
                         rowKey={record => record.appointment_id}
                         className='p-2 ' columns={columns} dataSource={upcomingPatientDet} pagination={pagination}
                         loading={isLoading}
-                    ></Table>)
+                    ></Table>
+
+
+
+
+                    )
                 }
 
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form, Input, Select, Layout, message, Upload, Table } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';
-import noDataFoundImg from "../img/no_app_available11.jpg"
+import { GrValidate } from "react-icons/gr";
 
-import { ClockCircleOutlined } from '@ant-design/icons';
+import { HiShare } from "react-icons/hi2";
+import noDataFoundImg from "../img/no_app_available11.jpg"
 import { useDispatch, useSelector } from 'react-redux';
 import { completedpatientdet } from '../reducer/AppointmentUpCom';
 import { addPrescription, addPrescriptionApi } from '../reducer/DocPrescription';
@@ -153,29 +153,20 @@ function CompletedApp() {
             // Remove unnecessary filterDropdown and onFilter properties
         },
         {
-            title: "Appointment Fee",
+            title: "Total Fee",
             dataIndex: "charges",
         },
         {
             title: "Status",
             dataIndex: "appointment_status",
             render: (text) => {
-                let backgroundColor, textColor;
-                if (text.toLowerCase() === "upcoming") {
-                    backgroundColor = "blue";
-                    textColor = "white";
-                } else if (text.toLowerCase() === "progress") {
-                    backgroundColor = "red";
-                    textColor = "white";
-                } else if (text.toLowerCase() === "completed") {
-                    backgroundColor = "green";
-                    textColor = "white";
-                }
+
                 return (
-                    <span style={{ backgroundColor, color: textColor, padding: '5px 7px', borderRadius: '3px' }}>
-                        {text}
+                    <span className={`${text === 'completed' ? 'bg-green-600' : 'bg-red-500'} text-white p-2 rounded-lg text-[0.8rem] flex font-bold`}>
+                        {text === 'completed' ? 'Completed' : 'Progress'}
+                        <GrValidate className='text-[1.1rem] ml-2 mt-[1.3px]' />
                     </span>
-                );
+                )
             },
         },
         {
@@ -186,8 +177,8 @@ function CompletedApp() {
                 return (
                     <div>
                         <Button type="" onClick={() => showModal(record.appointment_id, record.first_name)}
-                            className='bg-rblue mr-5 text-white text-[0.8rem] focus-within:bg-rblue font-bold px-5 py-1 flex align-center'>
-                            <span>Share Prescription</span>
+                            className='bg-rblue  mr-5 text-white text-[0.8rem] focus-within:bg-rblue font-bold px-5 py-1 flex align-center'>
+                            <HiShare className='text-[1.1rem] mr-2 mt-[1.3px]' />  <span>Prescription</span>
                         </Button>
                     </div>
                 );

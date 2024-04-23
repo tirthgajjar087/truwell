@@ -53,7 +53,7 @@ const Navigation = () => {
                     className='fixed '
                     collapsible
                     collapsed={collapsed}
-                    style={{ overflowY: 'auto', overflowX: 'hidden', position: 'fixed', left: 0, height: '100vh', backgroundColor: "white", transition: '0.3s all ease-out' }}
+                    style={{ overflowY: 'auto', overflowX: 'hidden', position: 'fixed', left: 0, height: '100vh', backgroundColor: "white", transition: '0.1s all ease-out' }}
                 >
                     <div className="">
                         <Link to="/">
