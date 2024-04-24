@@ -3,10 +3,13 @@ import { Button, Modal, Form, Input, Select, Layout, message, Upload, Table } fr
 import { Link } from 'react-router-dom';
 import { TbEyeShare } from "react-icons/tb";
 import moment from 'moment';
+
+import { PiUserCircle } from "react-icons/pi";
 import { HiOutlineInboxArrowDown } from "react-icons/hi2";
 import noDataFoundImg from "../img/no_app_available11.jpg"
 import { useDispatch, useSelector } from 'react-redux';
 import { Upcompatientdet, getMedicalHistoryApi } from '../reducer/AppointmentUpCom';
+import { render } from '@testing-library/react';
 const { Content } = Layout;
 
 function UpcomingApp() {
@@ -21,7 +24,7 @@ function UpcomingApp() {
         dispatch(Upcompatientdet());
     }, [Upcompatientdet]);
 
-    console.log("uo", upcomingPatientDet)
+    console.log("Upcoming data-:", upcomingPatientDet)
 
     const showModal = (appointment_id, patient_name) => {
         form.resetFields();
@@ -85,27 +88,13 @@ function UpcomingApp() {
         {
             title: "Appointment Fee",
             dataIndex: "charges",
+            render: (text) => "₹ " + text
         },
         {
             title: "Status",
             dataIndex: "appointment_status",
             render: (text) => {
-                // let backgroundColor, textColor;
-                // if (text.toLowerCase() === "upcoming") {
-                //     backgroundColor = "blue";
-                //     textColor = "white";
-                // } else if (text.toLowerCase() === "progress") {
-                //     backgroundColor = "red";
-                //     textColor = "white";
-                // } else {
-                //     backgroundColor = "inherit";
-                //     textColor = "inherit";
-                // }
-                // return (
-                //     <span style={{ backgroundColor, color: textColor, padding: '3px 6px', borderRadius: '3px' }}>
-                //         {text}
-                //     </span>
-                // );
+
                 return (
                     <span className={`${text === 'upcoming' ? 'bg-yellow-400' : "bg-red-500"} text-[0.8rem] text-black p-2 flex font-bold rounded-lg`}>
                         {text === 'upcoming' ? 'Upcoming' : 'Progress'}

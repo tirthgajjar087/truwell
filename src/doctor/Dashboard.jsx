@@ -137,12 +137,12 @@ const Dashboard = () => {
                         <canvas ref={chartRef} width={400} height={400}></canvas>
                     </div>
                     <div className='bg-white p-4 rounded-lg h-[100%] '>
-                        <h5 className='text-[1rem] text-rblue font-bold'>Gender Distribution</h5>
+                        <h5 className='text-[1rem] text-rblue font-bold mb-5'>Gender Distribution</h5>
                         <canvas ref={pieChartRef} width={10} height={100} style={{ marginLeft: "20px", height: "200px" }}></canvas>
                     </div>
                     <div className='bg-white p-4 rounded-lg'>
                         <h5 className='text-[1rem] text-rblue font-bold'>Upcoming Appointment</h5>
-                        <div className='overflow-y-auto mt-4 h-[310px] pr-3'>
+                        <div className='overflow-y-auto mt-4 h-[350px] pr-3'>
                             <Link to="/upcomingapp">
                                 <p className='text-right'>View More</p>
                             </Link>

@@ -51,7 +51,7 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
             },
             doctor_info: {
                 language: data.language.join(','),
-                specialization: data.specialization,
+                specialization: data.specialization.join(','),
                 charges: data.charges,
                 about: data.about,
             },

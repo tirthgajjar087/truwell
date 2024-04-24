@@ -63,7 +63,7 @@ function DoctorProfile() {
                 dob: moment(docDetails?.user?.dob),
                 language: docDetails?.doctor_information?.language.split(","),
                 charges: docDetails?.doctor_information?.charges,
-                specialization: docDetails?.doctor_information?.specialization,
+                specialization: docDetails?.doctor_information?.specialization.split(","),
                 about: docDetails?.doctor_information?.about,
                 hospital_name: docDetails?.hospital_data?.name,
                 hospital_address: docDetails?.hospital_data?.address,
@@ -292,7 +292,7 @@ function DoctorProfile() {
                                         <div className='grid grid-cols-3 gap-10 max-md:grid-cols-2 overflow-hidden flex-wrap'>
 
                                             <Form.Item label="Specialization" name="specialization" rules={[{ required: true, message: ' select specialization!' }]}>
-                                                <Select className='w-[100%] md:w-50 sm:w-30' placeholder="Select specialization">
+                                                <Select mode="multiple" className='w-[100%] md:w-50 sm:w-30' placeholder="Select specialization">
                                                     <Option value="Cardiology">Cardiology</Option>
                                                     <Option value="Nephrology">Nephrology</Option>
                                                     <Option value="Dermatology">Dermatology</Option>

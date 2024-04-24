@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import { DeletePrescriptionApi, EditPrescription, EditPrescriptionApi, deletePrescription, getPrescriptionApi } from '../reducer/DocPrescription';
 const { confirm } = Modal;
+const { TextArea } = Input;
 const { Dragger } = Upload;
 const { Content } = Layout;
 const { Option } = Select
@@ -16,6 +17,10 @@ function Prescription() {
     const { getPres, isLoading } = useSelector((state) => state.myprescription);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
+    const [filterValue, setFilterValue] = useState('all');
+    const [formData, setFormData] = useState({
+        Type: ''
+    })
 
     const [app_id, setApp_id] = useState('')
 
@@ -23,7 +28,7 @@ function Prescription() {
 
     useEffect(() => {
         dispatch(getPrescriptionApi());
-    }, [dispatch]);
+    }, [dispatch, getPrescriptionApi]);
 
     console.log("getpres", getPres)
 
@@ -41,9 +46,22 @@ function Prescription() {
             dosage: dosage,
             quantity: quantity,
             app_id: id,
-            patient_name: patient_name,
+            instructions: instructions
         });
     };
+    const handleFilterChange = (value) => {
+        setFilterValue(value);
+    };
+
+    // Filtered data based on selected filter value
+    const filteredData = getPres.filter(item => {
+        if (filterValue === 'all') {
+            return true;
+        } else {
+            return item.prescription_type === filterValue;
+        }
+    });
+
 
     const handleOk = () => {
         form
@@ -51,7 +69,6 @@ function Prescription() {
             .then(values => {
                 console.log('Received values--:', values);
                 dispatch(EditPrescriptionApi({ ...values })).then(() => {
-
                     dispatch(getPrescriptionApi());
                 })
                 setIsModalOpen(false);
@@ -74,7 +91,7 @@ function Prescription() {
         console.log("Your id is: ", id);
         dispatch(deletePrescription({ id: id }));
         confirm({
-            title: `Are you sure you want to delete Appointment id :${app_id} ?`,
+            title: `Are you sure you want to delete prescription for Appointment id ${app_id} ?`,
             icon: <ExclamationCircleFilled />,
             content: '',
             okText: 'Yes',
@@ -82,12 +99,15 @@ function Prescription() {
             cancelText: 'No',
             onOk(value) {
                 console.log('OK');
-                dispatch(DeletePrescriptionApi(value))
-                dispatch(getPrescriptionApi());
+                dispatch(DeletePrescriptionApi(value)).then(() => {
+                    dispatch(getPrescriptionApi());
+                })
                 Modal.destroyAll();
             },
             onCancel() {
                 console.log('Cancel');
+                Modal.destroyAll();
+
             },
         });
     };
@@ -159,7 +179,7 @@ function Prescription() {
             render: (text) => {
 
                 return (
-                    <span className={`${text.toLowerCase() === "prescription" ? 'bg-blue-500' : 'bg-red-500'} text-white px-3 py-1 rounded-lg`}>
+                    <span className={`${text === "prescription" ? 'bg-blue-500' : 'bg-red-500'} text-white px-3 py-1 rounded-lg`}>
 
                         {text === 'prescription' ? "Prescription" : "Sick Note"}
                     </span>
@@ -177,7 +197,7 @@ function Prescription() {
             dataIndex: "medicine",
         },
         {
-            title: "Issue date",
+            title: "Issued date",
             dataIndex: "created_at",
             render: (text) => moment(text).format("DD/MM/YYYY"),
         },
@@ -209,7 +229,7 @@ function Prescription() {
     return (
         <div>
             <Content className='p-2 m-[82px_10px_10px_5px]'>
-                <p className='text-[0.9rem]  mb-3 font-bold'>Share Prescription </p>
+                <p className='text-[0.9rem]  mb-3 font-bold'>Share Prescription</p>
                 {
                     Array.isArray(getPres) && getPres?.length <= 0 ? (
                         <>
@@ -219,17 +239,45 @@ function Prescription() {
                             </div>
                         </>) : (
                         <>
-                            <div>
-                                <Select name="" id="" className='bg-white p-2 rounded-md'>
-                                    <option value="prescription">Only Prescription</option>
-                                    <option value="sick_note">Only Sick note</option>
+                            <div className='flex justify-end mb-3'>
+
+                                <Select name="" id="" className='bg-white rounded-md w-48' onChange={handleFilterChange} value={filterValue}>
+                                    <Option className='p-4' value='all'>All Type</Option>
+                                    <Option value="prescription">Only Prescription</Option>
+                                    <Option value="sick_note">Only Sick note</Option>
                                 </Select>
                             </div>
 
                             <Table
                                 rowKey={(record) => record.id}
-                                className='p-2 prescription_table' columns={columns} dataSource={getPres} pagination={pagination}
+                                className='p-2 prescription_table' columns={columns}
+                                // dataSource={getPres}
+                                expandable={{
+                                    expandedRowRender: (record) => {
+                                        return (
+                                            <div>
+                                                <h5 className='font-bold'>Instruction </h5>
+                                                <div className='flex gap-10'>
+                                                    <p>Patient name : {record.patient_name}</p>
+                                                    <p>Appoinment Id : {record.appointment_id}</p>
+                                                </div>
+                                                <p className='bg-slate-200 p-5  rounded-lg text-black mt-2'>{record.instructions}</p>
+                                            </div>
+                                        )
+
+
+                                    },
+
+                                    rowExpandable: (record) => record.instructions !== 'Not Expandable',
+                                }}
+                                dataSource={filteredData}
+                                pagination={pagination}
                                 loading={isLoading}
+
+
+
+
+
                             ></Table>
 
 
@@ -285,7 +333,7 @@ function Prescription() {
                                         </Form.Item>
                                         <Form.Item
                                             name="patient_name"
-                                            label="Patient Name"
+                                            label="Patient Name [readonly]"
                                             className='mt-5'
                                             rules={[
                                                 {
@@ -307,11 +355,11 @@ function Prescription() {
                                             label="Type"
                                             rules={[{ required: true, message: 'Please Select Type!' }]}
                                         >
-                                            <Select readOnly disabled onChange={(value) => {
-                                                // setFormData((prevState) => ({
-                                                //     ...prevState,
-                                                //     Type: value,
-                                                // }))
+                                            <Select readOnly disabled value={(value) => {
+                                                setFormData((prevState) => ({
+                                                    ...prevState,
+                                                    Type: value,
+                                                }))
                                             }} >
                                                 <Option value="prescription">Prescription</Option>
                                                 <Option value="sick_note">Sick Note</Option>
@@ -381,27 +429,22 @@ function Prescription() {
 
 
 
-                                    {/* {type === 'Sick_note' ? (
-<Form.Item
-name="instruction"
-label="Instruction"
-rules={[{ required: false, message: 'Please enter Instruction!' }]}
->
-<TextArea rows={4} />
-</Form.Item>
-) : ""} */}
-                                    {/* <Input /> */}
 
-                                    {/* <Form.Item name='date'></Form.Item> */}
+                                    {formData.Type === 'sick_note' ? (
+                                        <Form.Item
+                                            name="instructions"
+                                            label="Instruction"
+                                            rules={[{ required: false, message: 'Please enter Instruction!' }]}
+                                        >
+
+                                            <TextArea rows={4} placeholder='Enter any instruction' />
+                                        </Form.Item>
+                                    ) : ""}
 
 
-                                    {/* <Form.Item
-name="frequency"
-label="Frequency"
-rules={[{ required: true, message: 'Please enter frequency!' }]}
->
-<Input />
-</Form.Item> */}
+
+
+
                                 </Form>
                             </Modal>
 

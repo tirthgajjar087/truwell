@@ -12,6 +12,7 @@ import { addPrescription, addPrescriptionApi } from '../reducer/DocPrescription'
 const { Dragger } = Upload;
 const { Content } = Layout;
 const { Option } = Select
+const { TextArea } = Input;
 
 function CompletedApp() {
 
@@ -21,6 +22,11 @@ function CompletedApp() {
     const [form] = Form.useForm();
     const [patientName, setPatientName] = useState('');
     const [app_id, setApp_id] = useState('')
+    const [formData, setFormData] = useState({
+        Type: ''
+    })
+
+    console.log("Setting", formData)
 
 
     const [dataTable, setDataTable] = useState([]);
@@ -155,6 +161,8 @@ function CompletedApp() {
         {
             title: "Total Fee",
             dataIndex: "charges",
+            render: (text) => "₹ " + text
+
         },
         {
             title: "Status",
@@ -199,6 +207,7 @@ function CompletedApp() {
                             <p className='text-[1rem] font-bold'>No Completed Appointments Available</p>
                         </div>) : (
                         <>
+
                             <Table className='p-2 ' columns={columns} dataSource={compPatientDet} pagination={pagination}></Table>
                             <Modal
 
@@ -304,10 +313,11 @@ function CompletedApp() {
                                             rules={[{ required: true, message: 'Please Select Type!' }]}
                                         >
                                             <Select onChange={(value) => {
-                                                // setFormData((prevState) => ({
-                                                //     ...prevState,
-                                                //     Type: value,
-                                                // }))
+                                                console.log("My value: ", value)
+                                                setFormData((prevState) => ({
+                                                    ...prevState,
+                                                    Type: value,
+                                                }))
                                             }} >
                                                 <Option value="prescription">Prescription</Option>
                                                 <Option value="sick_note">Sick Note</Option>
@@ -328,7 +338,6 @@ function CompletedApp() {
                                         >
                                             <Input placeholder='Enter medicine' className='focus-within:shadow-none    ' />
                                         </Form.Item>
-
                                     </div>
 
 
@@ -350,7 +359,7 @@ function CompletedApp() {
                                         </Form.Item>
                                         <Form.Item
                                             name="quantity"
-                                            label="quantity"
+                                            label="Quantity"
 
                                             rules={[
                                                 {
@@ -374,30 +383,17 @@ function CompletedApp() {
 
                                     </div>
 
+                                    {formData.Type === 'sick_note' ? (
+                                        <Form.Item
+                                            name="instructions"
+                                            label="Instruction"
+                                            rules={[{ required: false, message: 'Please enter Instruction!' }]}
+                                        >
 
+                                            <TextArea rows={4} placeholder='Enter any instruction' />
+                                        </Form.Item>
+                                    ) : ""}
 
-
-                                    {/* {type === 'Sick_note' ? (
-         <Form.Item
-             name="instruction"
-             label="Instruction"
-             rules={[{ required: false, message: 'Please enter Instruction!' }]}
-         >
-             <TextArea rows={4} />
-         </Form.Item>
-     ) : ""} */}
-                                    {/* <Input /> */}
-
-                                    {/* <Form.Item name='date'></Form.Item> */}
-
-
-                                    {/* <Form.Item
-             name="frequency"
-             label="Frequency"
-             rules={[{ required: true, message: 'Please enter frequency!' }]}
-         >
-             <Input />
-         </Form.Item> */}
                                 </Form>
                             </Modal>
 

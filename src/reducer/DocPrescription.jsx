@@ -20,31 +20,30 @@ export const config = {
 
 export const getPrescriptionApi = createAsyncThunk("myprescription/getPrescriptionApi", async (data, thunkAPI) => {
 
-    await axios.get(`${backendURL}/prescriptions`, {
-        headers: {
-            'ngrok-skip-browser-warning': 'true',
-            'Content-Type': 'application/json',
-            'AUTH_TOKEN': `${localStorage.getItem('token')}`
-        }
-    }).then((res) => {
+    await axios.get(`${backendURL}/prescriptions`, config).then((res) => {
         console.log("In Prescption api -:", res.data.data);
 
-        let data = res.data.data.map((singlePresc) => {
-            const { prescription, patient_name } = singlePresc
-            return {
-                ...prescription[0],
-                patient_name
+        let data = [];
+        for (let index = 0; index < res.data.data.length; index++) {
+            const element = res.data.data[index];
+            const { prescription, patient_name } = element
+            for (let j = 0; j < prescription.length; j++) {
+                let pres = prescription[j];
+                data.push({
+                    ...pres,
+                    patient_name
+                })
             }
-        });
+        }
 
         console.log('data=>', data)
         thunkAPI.dispatch(getAllprescription(data));
-        if (res.data.status === 200) {
-            message.success({
-                content: res.data.message,
-                duration: 7
-            });
-        }
+        // if (res.data.status === 200) {
+        //     message.success({
+        //         content: res.data.message,
+        //         duration: 7
+        //     });
+        // }
         handleApiError(res.data);
     })
 })
@@ -65,7 +64,7 @@ export const addPrescriptionApi = createAsyncThunk("myprescription/addPrescripti
             quantity: prescription.quantity,
             medicine: prescription.medicine,
         },
-        instructions: prescription.instruction,
+        instructions: prescription.instructions,
     }
     console.log("No data", prescriptionData);
     await axios.post(`${backendURL}/prescriptions`, prescriptionData, config)
@@ -97,7 +96,7 @@ export const EditPrescriptionApi = createAsyncThunk("myprescription/EditPrescrip
             quantity: prescription.quantity,
             medicine: prescription.medicine,
         },
-        instructions: prescription.instruction,
+        instructions: prescription.instructions,
     }
     // console.log("No data", prescriptionData);
 
