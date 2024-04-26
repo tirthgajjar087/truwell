@@ -2,9 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { message } from 'antd';
 
-
-export const backendURL = 'https://c2bb-122-170-10-87.ngrok-free.app';
-
+export const backendURL = 'https://37c7-122-170-10-87.ngrok-free.app';
 export const handleApiError = (error) => {
     if (error.status === 400) {
         console.log(error);
@@ -235,3 +233,6 @@ const authSlice = createSlice({
 
 export const { updateLoginObj, updateSignUpObj, logout } = authSlice.actions;
 export default authSlice.reducer;
+
+
+// "start": "react-scripts start --port 3001",

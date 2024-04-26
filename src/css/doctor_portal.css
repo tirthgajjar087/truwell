@@ -94,3 +94,22 @@ table tbody tr td {
   /* border-right: 0.1px solid lightgray; */
   border-bottom: 0.1px insets lightgray !important;
 }
+
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.3s infinite;
+}

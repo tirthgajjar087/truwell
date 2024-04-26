@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { Link } from 'react-router-dom';
 import defaultUserImg from "../img/user.webp";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FiUsers } from "react-icons/fi";
 import { LiaNotesMedicalSolid } from "react-icons/lia";
 import { TbCalendarUser } from "react-icons/tb";

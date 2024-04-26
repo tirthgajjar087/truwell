@@ -67,7 +67,13 @@ export const addPrescriptionApi = createAsyncThunk("myprescription/addPrescripti
         instructions: prescription.instructions,
     }
     console.log("No data", prescriptionData);
-    await axios.post(`${backendURL}/prescriptions`, prescriptionData, config)
+    await axios.post(`${backendURL}/prescriptions`, prescriptionData, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'AUTH_TOKEN': `${localStorage.getItem('token')}`
+        }
+    })
         .then((res) => {
             console.log("In prescption api--", res.data);
             if (res.data.status === 200) {
@@ -100,7 +106,13 @@ export const EditPrescriptionApi = createAsyncThunk("myprescription/EditPrescrip
     }
     // console.log("No data", prescriptionData);
 
-    await axios.patch(`${backendURL}/prescriptions/${appointment_id}`, prescriptionData, config)
+    await axios.patch(`${backendURL}/prescriptions/${appointment_id}`, prescriptionData, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'AUTH_TOKEN': `${localStorage.getItem('token')}`
+        }
+    })
         .then((res) => {
             console.log("In prescption api--", res.data);
             if (res.data.status === 200) {
@@ -121,7 +133,13 @@ export const DeletePrescriptionApi = createAsyncThunk("myprescription/DeletePres
     let appointment_id = prescData.id;
 
 
-    await axios.delete(`${backendURL}/prescriptions/${appointment_id}`, config)
+    await axios.delete(`${backendURL}/prescriptions/${appointment_id}`, {
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'AUTH_TOKEN': `${localStorage.getItem('token')}`
+        }
+    })
         .then((res) => {
             console.log("In prescption api--", res.data);
             if (res.data.status === 200) {

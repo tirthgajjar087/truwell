@@ -17,7 +17,7 @@ const { TextArea } = Input;
 function CompletedApp() {
 
     const { compPatientDet } = useSelector((state) => state.fetchAppointment);
-    const { prescriptions } = useSelector((state, action) => state.myprescription)
+    // const { prescriptions } = useSelector((state, action) => state.myprescription)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
     const [patientName, setPatientName] = useState('');
@@ -28,10 +28,6 @@ function CompletedApp() {
 
     console.log("Setting", formData)
 
-
-    const [dataTable, setDataTable] = useState([]);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5)
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -208,7 +204,9 @@ function CompletedApp() {
                         </div>) : (
                         <>
 
-                            <Table className='p-2 ' columns={columns} dataSource={compPatientDet} pagination={pagination}></Table>
+                            <Table
+
+                                className='p-2 ' columns={columns} dataSource={compPatientDet} pagination={pagination}></Table>
                             <Modal
 
                                 title={`Share Prescription `}

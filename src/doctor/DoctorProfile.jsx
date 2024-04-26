@@ -43,7 +43,7 @@ function DoctorProfile() {
 
     useEffect(() => {
         dispatch(getDocDetails(id));
-    }, [dispatch, id, getDocDetails]);
+    }, []);
 
 
 
@@ -73,7 +73,7 @@ function DoctorProfile() {
                 pincode: docDetails?.hospital_data?.pincode,
             });
         }
-    }, [form, docDetails]);
+    }, [form]);
 
 
 

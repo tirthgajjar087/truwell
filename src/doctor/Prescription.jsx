@@ -85,8 +85,6 @@ function Prescription() {
         console.log('Form values after cancel:', form.getFieldsValue());
     };
 
-
-
     const showDeleteConfirm = (id, app_id) => {
         console.log("Your id is: ", id);
         dispatch(deletePrescription({ id: id }));
@@ -121,6 +119,7 @@ function Prescription() {
         onChange(info) {
             const { status } = info.file;
             if (status !== 'uploading') {
+
                 console.log(info.file);
                 console.log(info.fileList);
                 // setFormData((...prevState) => {
@@ -177,10 +176,8 @@ function Prescription() {
             title: "Prescription type",
             dataIndex: "prescription_type",
             render: (text) => {
-
                 return (
                     <span className={`${text === "prescription" ? 'bg-blue-500' : 'bg-red-500'} text-white px-3 py-1 rounded-lg`}>
-
                         {text === 'prescription' ? "Prescription" : "Sick Note"}
                     </span>
                 );
@@ -240,7 +237,6 @@ function Prescription() {
                         </>) : (
                         <>
                             <div className='flex justify-end mb-3'>
-
                                 <Select name="" id="" className='bg-white rounded-md w-48' onChange={handleFilterChange} value={filterValue}>
                                     <Option className='p-4' value='all'>All Type</Option>
                                     <Option value="prescription">Only Prescription</Option>
@@ -255,32 +251,29 @@ function Prescription() {
                                 expandable={{
                                     expandedRowRender: (record) => {
                                         return (
-                                            <div>
+                                            <div className='px-2  py-2'>
                                                 <h5 className='font-bold'>Instruction </h5>
                                                 <div className='flex gap-10'>
                                                     <p>Patient name : {record.patient_name}</p>
                                                     <p>Appoinment Id : {record.appointment_id}</p>
                                                 </div>
-                                                <p className='bg-slate-200 p-5  rounded-lg text-black mt-2'>{record.instructions}</p>
+                                                <div>
+                                                    <p className='bg-slate-200 p-5  rounded-lg text-black mt-2'>{record.instructions}</p>
+                                                </div>
+
                                             </div>
                                         )
-
-
                                     },
 
-                                    rowExpandable: (record) => record.instructions !== 'Not Expandable',
+                                    rowExpandable: (record) => record.instructions !== null,
+
                                 }}
                                 dataSource={filteredData}
                                 pagination={pagination}
                                 loading={isLoading}
 
 
-
-
-
                             ></Table>
-
-
                             <Modal
 
                                 title={`Edit Prescription `}
@@ -331,6 +324,7 @@ function Prescription() {
                                         >
                                             <Input placeholder='Enter Title' className='focus-within:shadow-none' />
                                         </Form.Item>
+
                                         <Form.Item
                                             name="patient_name"
                                             label="Patient Name [readonly]"
@@ -346,8 +340,6 @@ function Prescription() {
                                         </Form.Item>
 
                                     </div>
-
-
 
                                     <div className='grid grid-cols-2 gap-5'>
                                         <Form.Item
@@ -422,26 +414,20 @@ function Prescription() {
                                         >
                                             <Input placeholder='Enter quantity' className='focus-within:shadow-none ' />
                                         </Form.Item>
-
-
                                     </div>
 
 
 
 
 
-                                    {formData.Type === 'sick_note' ? (
-                                        <Form.Item
-                                            name="instructions"
-                                            label="Instruction"
-                                            rules={[{ required: false, message: 'Please enter Instruction!' }]}
-                                        >
-
-                                            <TextArea rows={4} placeholder='Enter any instruction' />
-                                        </Form.Item>
-                                    ) : ""}
-
-
+                                    <Form.Item
+                                        name="instructions"
+                                        label="Instruction"
+                                        rules={[{ required: false, message: 'Please enter Instruction!' }]}
+                                        className={`${formData.Type === 'sick_note' ? 'none' : 'block'}`}
+                                    >
+                                        <TextArea rows={4} placeholder='Enter any instruction' />
+                                    </Form.Item>
 
 
 
@@ -454,7 +440,7 @@ function Prescription() {
                 }
 
             </Content>
-        </div>
+        </div >
     );
 }
 

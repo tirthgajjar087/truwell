@@ -1,7 +1,10 @@
 import './css/doctor_portal.css';
 import './css/fontRubik.css';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import React from 'react';
+
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './doctor/loginSignup/Login.jsx';
+import { Skeleton } from 'antd';
 import Signup from './doctor/loginSignup/Signup';
 import OtpVerification from './doctor/loginSignup/OtpVerification';
 import ForgotEmail from './doctor/loginSignup/ForgotEmail';
@@ -14,11 +17,12 @@ import withCollapseState from './doctor/withCollapseState.jsx';
 import Prescription from './doctor/Prescription.jsx';
 import Rota from './doctor/Rota.jsx';
 import { useSelector } from 'react-redux';
-import ProtectedRoute from './doctor/ProtectedRoute.jsx';
 import UpcomingApp from './doctor/UpcomingApp.jsx';
 import CompletedApp from './doctor/CompletedApp.jsx';
 import MedicalHistory from './doctor/MedicalHistory.jsx';
 
+const LazyCompleted = React.lazy(() => import("./doctor/CompletedApp.jsx"));
+const LazyRota = React.lazy(() => import("./doctor/Rota.jsx"));
 
 
 function App() {

@@ -10,6 +10,7 @@ import { rotaApi } from '../reducer/RotaReducer';
 import noAppImg from "../img/no-slots.svg";
 import { useParams } from 'react-router';
 import { getDocDetails } from '../reducer/EditProfile';
+import Skeleton from './Skeleton';
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -43,8 +44,6 @@ function Rota() {
         form.setFieldsValue({
             price: docDetails?.doctor_information?.charges,
         })
-
-
         if (!isDocProfileFilled()) {
             message.error('Please fill all values in the edit profile.');
             setIsModalOpen(false);
@@ -285,7 +284,33 @@ function Rota() {
                                 {addRota?.available_date?.map((date, index) => (
                                     <Tabs.TabPane key={index + 1} tab={moment(date).format('DD-MM-YYYY')}>
                                         {
-                                            isLoading ? (<p>Loading...</p>) : (
+                                            isLoading ? (
+                                                <div className='grid grid-cols-8 gap-7 py-3 px-2'>
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                    <Skeleton />
+                                                </div>
+                                            ) : (
                                                 addRota?.available_slots.length <= 0 ? (
                                                     <div className='text-center mt-14'>
                                                         <img src={noAppImg} alt="" className='w-[90px] m-auto' />
@@ -296,13 +321,11 @@ function Rota() {
                                                             addRota?.available_slots.map((slot, slotIndex) => {
                                                                 // console.log(slot);
                                                                 return (
-
                                                                     <Button key={slotIndex} className={`${slot.status === 'booked' ? '!bg-green-700 font-semibold !text-white hover:bg-green-500' : 'bg-red-500'}flex align-center gap-1 justify-center px-2`} >
 
                                                                         {moment(slot.start_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')} - {moment(slot.end_time, 'YYYY-MM-DD,HH:mm').format('HH:mm')}
-
                                                                     </Button>
-                                                                    // className={`${slot.status==='booked' }`}
+
 
                                                                 )
                                                             })
