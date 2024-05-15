@@ -59,7 +59,6 @@ export const getMedicalHistoryApi = createAsyncThunk("fetchAppointment/getMedica
 
         if (res.data.status === 200) {
             thunkAPI.dispatch(getMedicalHistory(res.data));
-
         }
         handleApiError(res.data);
     })

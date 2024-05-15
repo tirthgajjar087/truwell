@@ -10,13 +10,14 @@ import collapsedLogo from "../img/collapsed.png";
 import defaultUserImg from "../img/user.webp";
 import { IoMdLogOut } from "react-icons/io";
 import { MdOutlineDashboard } from "react-icons/md";
+import { LuMessageSquare } from "react-icons/lu";
 import { IoSearchSharp } from "react-icons/io5";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BsBuildingAdd, BsPrescription } from "react-icons/bs";
 import { LiaBusinessTimeSolid } from "react-icons/lia";
 import { useSelector, useDispatch } from "react-redux";
-import withCollapseState from './withCollapseState'
-import { Layout, Menu, Button, Input, Dropdown, Space } from 'antd';
+import withCollapseState from '../doctor/withCollapseState'
+import { Layout, Menu, Button, Input, Dropdown, Space, Badge, Avatar } from 'antd';
 import { Outlet } from 'react-router';
 import { Link } from 'react-router-dom';
 import { logoutAPi } from '../reducer/AuthDoctor';
@@ -98,7 +99,6 @@ const Navigation = () => {
                             {
 
                                 key: '4',
-
                                 icon: <BsPrescription style={{ fontSize: 22 }} />,
                                 label: (<Link to="/prescription">Prescription</Link>),
 
@@ -135,46 +135,62 @@ const Navigation = () => {
                             />
                             <Input placeholder='Search Here' className='w-[30%] focus-within:shadow-none' prefix={<IoSearchSharp />} />
                         </div>
-                        <div className='mr-3'>
-                            <Dropdown
-                                menu={{
-                                    items: [
-                                        {
-                                            icon: <UserOutlined style={{ fontSize: 22 }} />,
-                                            label: (
-                                                <Link to={`/doctorprofile/${id}`}>
-                                                    Profile
-                                                </Link>
-                                            ),
-                                            key: '0',
-                                        },
-                                        {
-                                            type: 'divider',
-                                        },
-                                        {
-                                            icon: <IoMdLogOut style={{ fontSize: 22 }} />,
-                                            label: (
-                                                <Link to="/"
-                                                    onClick={() => {
-                                                        dispatch(logoutAPi())
-                                                    }}
-                                                >
-                                                    Logout
-                                                </Link>
-                                            ),
-                                            key: '1',
-                                        },
-                                    ]
-                                }}
-                            >
-                                <Link>
-                                    <Space>
-                                        <img src={defaultUserImg} alt="" className='max-w-10 ' />
-                                        <p className='min-w-12 capitalize overflow-hidden text-ellipsis'>Dr.{docDetails?.user?.first_name} {docDetails?.user?.last_name}</p>
-                                        <RiArrowDropDownLine className='text-2xl' />
-                                    </Space>
+                        <div className='mr-3 flex gap-7 justify-center items-center'>
+
+                            <div style={{ transform: "translate(0px, 10px)" }}>
+                                <Link to='/chatweb'>
+                                    <Badge count={17} color='blue' className='hover:text-blue-500' >
+                                        <LuMessageSquare className='text-[1.5rem] ' />
+                                        {/* <Avatar shape="square" size="large" /> */}
+                                    </Badge>
                                 </Link>
-                            </Dropdown>
+                            </div>
+
+                            <div>
+
+                                <Dropdown
+                                    menu={{
+                                        items: [
+                                            {
+                                                icon: <UserOutlined style={{ fontSize: 22 }} />,
+                                                label: (
+                                                    <Link to={`/doctorprofile/${id}`}>
+                                                        Profile
+                                                    </Link>
+                                                ),
+                                                key: '0',
+                                            },
+                                            {
+                                                type: 'divider',
+                                            },
+                                            {
+                                                icon: <IoMdLogOut style={{ fontSize: 22 }} />,
+                                                label: (
+                                                    <Link to="/"
+                                                        onClick={() => {
+                                                            dispatch(logoutAPi())
+                                                        }}
+                                                    >
+                                                        Logout
+                                                    </Link>
+                                                ),
+                                                key: '1',
+                                            },
+                                        ]
+                                    }}
+                                >
+                                    <Link>
+                                        <Space>
+
+                                            <Avatar className='bg-gray-500 shadow-md !text-[0.85rem] !uppercase' size={40}>{docDetails?.user?.first_name[0]}{docDetails?.user?.last_name[0]}</Avatar>
+                                            {/* <img src={defaultUserImg} alt="" className='max-w-10 ' /> */}
+                                            <p className='min-w-12 capitalize overflow-hidden text-ellipsis'>Dr.{docDetails?.user?.first_name} {docDetails?.user?.last_name}</p>
+                                            <RiArrowDropDownLine className='text-2xl' />
+                                        </Space>
+                                    </Link>
+                                </Dropdown>
+                            </div>
+
                         </div>
                     </Header>
                     <Outlet />
@@ -184,3 +200,7 @@ const Navigation = () => {
     );
 };
 export default withCollapseState(Navigation);
+
+
+
+

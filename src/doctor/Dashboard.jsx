@@ -8,7 +8,6 @@ import { LiaNotesMedicalSolid } from "react-icons/lia";
 import { TbCalendarUser } from "react-icons/tb";
 import { LiaBusinessTimeSolid } from "react-icons/lia";
 import { Layout } from 'antd';
-
 const { Content } = Layout;
 
 const Dashboard = () => {
@@ -40,9 +39,9 @@ const Dashboard = () => {
         // Get the context of the canvas
         const ctx = chartRef.current.getContext('2d');
 
-        // Check if there's already a chart instance
+
         if (chartRef.current.chart) {
-            chartRef.current.chart.destroy(); // Destroy the previous chart instance
+            chartRef.current.chart.destroy();
         }
 
         // Create the new chart
@@ -53,6 +52,10 @@ const Dashboard = () => {
         });
     }, []);
 
+
+
+
+    //she is also in 
     useEffect(() => {
         const genderData = {
             labels: ['Male', 'Female', 'Other'],
@@ -69,7 +72,7 @@ const Dashboard = () => {
 
         // Check if there's already a chart instance
         if (pieChartRef.current.chart) {
-            pieChartRef.current.chart.destroy(); // Destroy the previous chart instance
+            pieChartRef.current.chart.destroy();
         }
 
         // Create the new chart

@@ -2,7 +2,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { message } from 'antd';
 
-export const backendURL = 'https://37c7-122-170-10-87.ngrok-free.app';
+// export const backendURL = 'https://37c7-122-170-10-87.ngrok-free.app';
+export const backendURL = 'http://192.168.0.115:3000';
+
+//Handle Api Error
 export const handleApiError = (error) => {
     if (error.status === 400) {
         console.log(error);
@@ -57,7 +60,6 @@ export const loginDoctor = createAsyncThunk('auth/loginDoctor', async (data, thu
                     message.success(res.data.message)
                     message.duration(7);
                 }
-
                 handleApiError(res.data);
 
             })

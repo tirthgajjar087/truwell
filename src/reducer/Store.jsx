@@ -4,6 +4,7 @@ import editProfile from './EditProfile'
 import createRota from "./RotaReducer";
 import fetchAppointment from "./AppointmentUpCom";
 import docPrescription from "./DocPrescription";
+import chatWebList from "./chatweblist";
 
 const logger = (store) => (next) => (action) => {
     next(action);
@@ -16,7 +17,8 @@ const store = configureStore({
         DocEditProfile: editProfile,
         newRota: createRota,
         fetchAppointment: fetchAppointment,
-        myprescription: docPrescription
+        myprescription: docPrescription,
+        chatWebList: chatWebList
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

@@ -11,7 +11,7 @@ import ForgotEmail from './doctor/loginSignup/ForgotEmail';
 import OtpForgotVerification from './doctor/loginSignup/OtpForgotVerification.jsx';
 import ForgotPassword from './doctor/loginSignup/ForgotPassword.jsx';
 import Dashboard from './doctor/Dashboard.jsx';
-import Navigation from './doctor/Navigation.jsx';
+import Navigation from './components/Navigation.jsx';
 import DoctorProfile from './doctor/DoctorProfile.jsx';
 import withCollapseState from './doctor/withCollapseState.jsx';
 import Prescription from './doctor/Prescription.jsx';
@@ -20,6 +20,8 @@ import { useSelector } from 'react-redux';
 import UpcomingApp from './doctor/UpcomingApp.jsx';
 import CompletedApp from './doctor/CompletedApp.jsx';
 import MedicalHistory from './doctor/MedicalHistory.jsx';
+import Chatweb from './doctor/Chatweb.jsx';
+
 
 const LazyCompleted = React.lazy(() => import("./doctor/CompletedApp.jsx"));
 const LazyRota = React.lazy(() => import("./doctor/Rota.jsx"));
@@ -55,6 +57,8 @@ function App() {
               <Route path='/forgotpassword' element={<ForgotPassword />} />
             </>
           )}
+
+          <Route path="/chatweb" element={<Chatweb />} />
 
 
 

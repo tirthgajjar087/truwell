@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { useParams } from 'react-router';
-import { backendURL } from "./AuthDoctor";
+import { backendURL, logout } from "./AuthDoctor";
 import axios from 'axios';
 import { message } from 'antd';
 import { handleApiError } from "./AuthDoctor";
@@ -13,6 +13,7 @@ export const config = {
     headers: {
         'ngrok-skip-browser-warning': 'true',
         'Content-Type': 'application/json',
+        'AUTH_TOKEN': `${localStorage.getItem('token')}`
     },
 }
 
@@ -23,9 +24,16 @@ export const getDocDetails = createAsyncThunk("DocEditProfile/getDocDetails", as
         // console.log("Getting id is " + id)
         console.log("edit id api is-", id);
         axios.get(`${backendURL}/users/${id}`, config)
-
             .then((res) => {
+                console.log("My response in user details is==:", res.data);
                 thunkAPI.dispatch(getEditProfile(res.data.data))
+                // if (res.data.status === 440) {
+                //     message.error(res.data.message);
+                //     localStorage.removeItem('token');
+                //     localStorage.removeItem('user_id');
+                //     localStorage.removeItem('activeKey');
+                //     thunkAPI.dispatch(logout(res.data));
+                // }
             })
             .catch((err) => {
                 console.log(err)
@@ -39,6 +47,12 @@ export const getDocDetails = createAsyncThunk("DocEditProfile/getDocDetails", as
 
 export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", async (data, thunkAPI) => {
     try {
+
+        console.log("API Update data is ", data)
+        console.log("Your image Update data is ", data.selectedImage)
+        console.log("Your name Update data is ", data.selectedImage.name)
+        console.log("Your size Update data is ", data.selectedImage.size)
+        console.log("Your type Update data is ", data.selectedImage.type)
         const docAlldet = {
             user: {
                 first_name: data.first_name,
@@ -48,6 +62,12 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
                 gender: data.gender,
                 role: data.role,
                 dob: data.dob,
+                // profile_pic_file_name: data.selectedImage.name,
+                // profile_pic_file_size: data.selectedImage.size,
+                // profile_pic_content_type: data.selectedImage.type,
+                // profile_pic_updated_at: data.selectedImage.lastModifiedDate,
+                // profile_data_url:data.file.url,
+                // profile_data_thumb_url:data.file.thumb_url,
             },
             doctor_info: {
                 language: data.language.join(','),
@@ -62,7 +82,7 @@ export const updateDocEditProfile = createAsyncThunk("DocEditProfile/update", as
                 state: data.state,
                 // country: data.country,
                 pincode: data.pincode,
-            }
+            },
         }
         const id = data.id;
         console.log(docAlldet)

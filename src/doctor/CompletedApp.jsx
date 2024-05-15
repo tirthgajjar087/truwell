@@ -17,7 +17,7 @@ const { TextArea } = Input;
 function CompletedApp() {
 
     const { compPatientDet } = useSelector((state) => state.fetchAppointment);
-    // const { prescriptions } = useSelector((state, action) => state.myprescription)
+    // const { prescriptions } = useSelector((formDatastate, action) => state.myprescription)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
     const [patientName, setPatientName] = useState('');
@@ -27,7 +27,6 @@ function CompletedApp() {
     })
 
     console.log("Setting", formData)
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -50,16 +49,12 @@ function CompletedApp() {
             .validateFields()
             .then(values => {
                 console.log('Received values--:', values);
-
                 dispatch(addPrescriptionApi({ ...values }))
-
                 setIsModalOpen(false);
                 form.resetFields();
-
-                // console.log('Form values after reset:', form.getFieldsValue());
             })
             .catch(errorInfo => {
-                console.log('Validation failed:', errorInfo);
+                console.log('Validation failed--:', errorInfo);
             })
 
     };
@@ -70,9 +65,6 @@ function CompletedApp() {
         console.log('Form values after cancel:', form.getFieldsValue());
     };
 
-    const handleFormChange = (changedValues, allValues) => {
-        // console.log(changedValues);
-    };
 
     // drag and drop 
     const props = {
@@ -217,7 +209,7 @@ function CompletedApp() {
                                     form={form}
                                     className='prescription_form'
                                     name="prescriptionForm"
-                                    onValuesChange={handleFormChange}
+
                                 >
                                     <p className='text-[0.9rem] text-center my-4 font-bold text-sky-500'>
                                         {`Appointment ID: ${app_id} - Appointment Date: ${moment(Array.isArray(compPatientDet) && compPatientDet?.find(patient => patient?.appointment_id === app_id)?.appointment_date).format("DD/MM/YYYY")}`}

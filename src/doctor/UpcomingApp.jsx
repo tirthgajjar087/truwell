@@ -9,15 +9,10 @@ import { HiOutlineInboxArrowDown } from "react-icons/hi2";
 import noDataFoundImg from "../img/no_app_available11.jpg"
 import { useDispatch, useSelector } from 'react-redux';
 import { Upcompatientdet, getMedicalHistoryApi } from '../reducer/AppointmentUpCom';
-import { render } from '@testing-library/react';
 const { Content } = Layout;
 
 function UpcomingApp() {
     const { upcomingPatientDet, isLoading } = useSelector((state) => state.fetchAppointment);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [form] = Form.useForm();
-    const [patientName, setPatientName] = useState('');
-    const [app_id, setApp_id] = useState('')
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -25,24 +20,6 @@ function UpcomingApp() {
     }, [Upcompatientdet]);
 
     console.log("Upcoming data-:", upcomingPatientDet)
-
-    const showModal = (appointment_id, patient_name) => {
-        form.resetFields();
-        setIsModalOpen(true);
-        console.log("Your share appitnemtnet id--", appointment_id)
-        setPatientName(patient_name);
-        setApp_id(appointment_id);
-        dispatch(getMedicalHistoryApi(appointment_id));
-        // dispatch(addPrescription({ appointment_id: appointment_id }))
-    };
-
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-        form.resetFields();
-        console.log('Form values after cancel:', form.getFieldsValue());
-    };
-
 
 
 
@@ -107,7 +84,6 @@ function UpcomingApp() {
             title: "Action",
             dataIndex: "action",
             render: (text, record, index) => {
-                // console.log("My action", text, record, index);
                 return (
                     <div>
 

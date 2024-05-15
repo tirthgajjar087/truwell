@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import defaultUserImg from "../img/user.webp";
 import { Button, Form, Input, Select, Layout } from 'antd';
@@ -14,41 +14,67 @@ const { Option } = Select;
 function DoctorProfile() {
 
     const { docDetails, isLoading } = useSelector((state) => state.DocEditProfile)
-
+    const fileInput = useRef(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [cities, setCities] = useState([]);
     const dispatch = useDispatch();
     const [file, setFile] = useState();
     const [form] = Form.useForm();
-
     const { id } = useParams();
     console.log("ID-:", id)
 
+    const stateOptions = [
+        {
+            value: 'Gujarat',
+            cities: ['Ahmedabad', 'Anand', 'Banaskantha', 'Bharuch', 'Bhavnagar', 'Dahod', 'Gandhinagar', 'Jamnagar', 'Junagadh', 'Kutch', 'Kheda', 'Mehsana', 'Navsari', 'Patan', 'Panchmahal', 'Porbandar', 'Rajkot', 'Sabarkantha', 'Surendranagar', 'Surat', 'Vyara', 'Vadodara', 'Valsad']
+        },
+        { value: 'Delhi', cities: ['Central Delhi', 'East Delhi', 'New Delhi', 'North Delhi', 'North East Delhi', 'North West Delhi', 'South Delhi', 'South West Delhi', 'West Delhi'] },
+        { value: 'Tamil Nadu', cities: ['Ariyalur', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Erode', 'Kanchipuram', 'Kanyakumari', 'Karur', 'Madurai', 'Nagapattinam', 'Nilgiris'] },
+        { value: 'Uttarakhand', cities: ['Almora', 'Bageshwar', 'Chamoli', 'Champawat', 'Dehradun', 'Haridwar', 'Nainital'] },
+        { value: 'Maharashtra', cities: ['Ahmednagar', 'Akola', 'Amravati', 'Aurangabad', 'Bhandara', 'Beed', 'Buldhana', 'Chandrapur', 'Dhule', 'Gadchiroli', 'Gondia', 'Hingoli', 'Jalgaon', 'Jalna', 'Kolhapur', 'Latur', 'Mumbai City', 'Mumbai suburban'] },
+        { value: 'Punjab', cities: ['Amritsar', 'Barnala', 'Bathinda', 'Firozpur', 'Faridkot', 'Fatehgarh Sahib', 'Fazilka', 'Gurdaspur', 'Hoshiarpur', 'Jalandhar', 'Kapurthala', 'Ludhiana'] }
+    ];
+
+
+    const handleStateChange = (value) => {
+        const selectedState = stateOptions.find(option => option.value === value);
+        setCities(selectedState.cities);
+    };
 
 
 
 
+    // function handleChange(e) {
+    //     console.log(e.target.files);
+    //     setFile(URL.createObjectURL(e.target.files[0]));
+    // }
     function handleChange(e) {
-        console.log(e.target.files);
-        setFile(URL.createObjectURL(e.target.files[0]));
+        const file = e.target.files[0];
+        setSelectedImage(file);
+        console.log("Your select image is", selectedImage)
+
     }
+
+    useEffect(() => {
+        console.log("Re render file data is---:", selectedImage)
+        console.log("Your file data is---:", file)
+    }, [selectedImage, file])
 
     const onFinish = (values) => {
         values.id = id
         console.log('Success:', values);
-        dispatch(updateDocEditProfile(values))
+        let sendData = { ...values, selectedImage }
+        dispatch(updateDocEditProfile(sendData))
         dispatch(getDocDetails(id));
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
     useEffect(() => {
         dispatch(getDocDetails(id));
-    }, []);
-
-
-
-
-
+    }, [getDocDetails]);
 
 
     useEffect(() => {
@@ -61,9 +87,9 @@ function DoctorProfile() {
                 phone_no: docDetails?.user?.phone_no,
                 gender: docDetails?.user?.gender,
                 dob: moment(docDetails?.user?.dob),
-                language: docDetails?.doctor_information?.language.split(","),
+                language: docDetails?.doctor_information?.language !== null ? docDetails?.doctor_information?.language.split(",") : "",
                 charges: docDetails?.doctor_information?.charges,
-                specialization: docDetails?.doctor_information?.specialization.split(","),
+                specialization: docDetails?.doctor_information?.specialization !== null ? docDetails?.doctor_information?.specialization.split(",") : "",
                 about: docDetails?.doctor_information?.about,
                 hospital_name: docDetails?.hospital_data?.name,
                 hospital_address: docDetails?.hospital_data?.address,
@@ -72,15 +98,15 @@ function DoctorProfile() {
                 country: docDetails?.hospital_data?.country,
                 pincode: docDetails?.hospital_data?.pincode,
             });
+
+
+            console.log("Your doctort image is--:", docDetails?.user?.profile_pic_file_name);
         }
-    }, [form]);
-
-
+    }, [docDetails]);
 
 
     return (
         <>
-
             {
                 isLoading ? (<Content className='p-2 m-[82px_10px_0px_14px]'>
                     <p>Loading...</p>
@@ -119,11 +145,30 @@ function DoctorProfile() {
                                             </Button>
                                         </div>
                                         <div className='m-auto'>
+                                            <img
+                                                src={
+                                                    selectedImage ? URL.createObjectURL(selectedImage) :
+                                                        (docDetails?.pic ? docDetails?.pic : defaultUserImg)
+                                                }
 
-                                            <img src={file ? file : defaultUserImg} className='w-[100px] h-[100px] rounded-xl m-auto' alt='user image' />
+                                                aria-hidden
+                                                alt="Doctor image"
+                                                className="w-[100px] h-[100px] rounded-xl m-auto"
+                                            />
 
 
-                                            <input type="file" onChange={handleChange} className='m-auto' />
+
+                                            <div className='flex justify-center'>
+                                                <button className="edit-image-btn" onClick={() => fileInput.current.click()}>
+                                                    Edit Profile
+                                                </button>
+                                                <input
+                                                    type="file"
+                                                    ref={fileInput}
+                                                    onChange={handleChange}
+                                                    className="hidden"
+                                                />
+                                            </div>
                                         </div>
                                         <div className='grid grid-cols-3 gap-10 mt-10'>
 
@@ -140,7 +185,7 @@ function DoctorProfile() {
                                                     },
                                                 ]}
                                             >
-                                                <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter Doctor Firstname' value={docDetails ? docDetails.first_name : "w"} disabled />
+                                                <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter Doctor Firstname' disabled />
 
                                             </Form.Item>
 
@@ -316,30 +361,41 @@ function DoctorProfile() {
                                             <Form.Item label="Hospital Name" name="hospital_name" rules={[{ required: true, message: 'Hospital Name is required!' }]}>
                                                 <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter hospital name' />
                                             </Form.Item>
-
                                             <Form.Item label="Hospital Address" name="hospital_address" rules={[{ required: true, message: 'Hospital Address is required!' }]}>
                                                 <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter hospital address' />
                                             </Form.Item>
-                                            <Form.Item label="City" name="city" rules={[{ required: true, message: 'City is required!' }]}>
-                                                <Select className='w-[100%] md:w-50 sm:w-30' placeholder="Select city">
-                                                    <Option value="Ahmedabad">Ahmedabad</Option>
-                                                    <Option value="Surat">Surat</Option>
-                                                    <Option value="Noida">Noida</Option>
-                                                    <Option value="Delhi">Delhi</Option>
-                                                    <Option value="Goa">Goa</Option>
-                                                    <Option value="Mumbai">Mumbai</Option>
-                                                    <Option value="Bihar">Bihar</Option>
-                                                    <Option value="Bangalore">Bangalore</Option>
-                                                    <Option value="UP">UP</Option>
-                                                    <Option value="Pune">Pune</Option>
-                                                    <Option value="Nashik">Nashik</Option>
+
+                                            <Form.Item
+                                                label="State"
+                                                name="state"
+                                                rules={[{ required: true, message: 'State is required!' }]}
+                                            >
+                                                <Select
+                                                    className='w-[100%] md:w-50 sm:w-30'
+                                                    placeholder="Select state"
+                                                    onChange={handleStateChange}
+                                                >
+                                                    {stateOptions.map(option => (
+                                                        <Option key={option.value} value={option.value}>{option.value}</Option>
+                                                    ))}
                                                 </Select>
                                             </Form.Item>
                                         </div>
 
                                         <div className='grid grid-cols-3 gap-10 max-md:grid-cols-2 overflow-hidden flex-wrap'>
-                                            <Form.Item label="State" name="state" rules={[{ required: true, message: 'State is required!' }]}>
-                                                <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter state' />
+                                            <Form.Item
+                                                label="City"
+                                                name="city"
+                                                rules={[{ required: true, message: 'City is required!' }]}
+                                            >
+                                                <Select
+                                                    className='w-[100%] md:w-50 sm:w-30'
+                                                    placeholder="Select city"
+                                                >
+                                                    {cities.map(city => (
+                                                        <Option key={city} value={city}>{city}</Option>
+                                                    ))}
+                                                </Select>
                                             </Form.Item>
 
                                             <Form.Item label="Pincode" name="pincode" rules={[
@@ -350,7 +406,6 @@ function DoctorProfile() {
                                                 {
                                                     pattern: /^[0-9]+$/,
                                                     message: ' enter a valid phone number containing only digits.',
-
                                                 }
                                             ]}>
                                                 <Input className='w-[100%] md:w-50 sm:w-30' placeholder='Enter pincode' />

@@ -28,7 +28,8 @@ function Prescription() {
 
     useEffect(() => {
         dispatch(getPrescriptionApi());
-    }, [dispatch, getPrescriptionApi]);
+        console.log("My form data is--:", formData)
+    }, [dispatch, getPrescriptionApi, formData]);
 
     console.log("getpres", getPres)
 
@@ -48,6 +49,13 @@ function Prescription() {
             app_id: id,
             instructions: instructions
         });
+        console.log("Your share appitnemtnet id--", appointment_id)
+        setFormData((prevState) => ({
+            ...prevState,
+            Type: prescription_type,
+        }))
+
+        console.log("Your form data is--:", formData)
     };
     const handleFilterChange = (value) => {
         setFilterValue(value);
@@ -419,15 +427,18 @@ function Prescription() {
 
 
 
+                                    {
+                                        formData.Type === 'sick_note' ? (<Form.Item
+                                            name="instructions"
+                                            label="Instruction"
+                                            rules={[{ required: false, message: 'Please enter Instruction!' }]}
+                                            className={`${formData.Type === 'sick_note' ? 'none' : 'block'}`}
+                                        >
+                                            <TextArea rows={4} placeholder='Enter any instruction' />
+                                        </Form.Item>) : ""
 
-                                    <Form.Item
-                                        name="instructions"
-                                        label="Instruction"
-                                        rules={[{ required: false, message: 'Please enter Instruction!' }]}
-                                        className={`${formData.Type === 'sick_note' ? 'none' : 'block'}`}
-                                    >
-                                        <TextArea rows={4} placeholder='Enter any instruction' />
-                                    </Form.Item>
+                                    }
+
 
 
 

@@ -796,12 +796,493 @@ export default Rota;
 
       })
   ) : (
-  <>
-    <div>
-      <img src={noDataFoundImg} alt="" className='w-96 h-full m-auto' />
+    <>
+      <div>
+        <img src={noDataFoundImg} alt="" className='w-96 h-full m-auto' />
 
-    </div>
-    {/* <p>No Slots Available</p> */}
-  </>
-)
+      </div>
+      {/* <p>No Slots Available</p> */}
+    </>
+  )
 }
+
+
+<Tabs defaultActiveKey="1" tabPosition="top" >
+
+
+  <Tabs.TabPane key={index + 1} tab="All">
+
+    {users.map((user, index) => (
+      <div key={index} >
+        <User {...user} />
+        {index < users.length - 1 && <hr className='my-1 border-t border-gray-200' />}
+      </div>
+    ))}
+  </Tabs.TabPane>
+
+</Tabs>
+
+
+
+const [messages, setMessages] = useState([{
+  text: [
+    'tirth',
+    'asdasd'
+  ],
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true
+},
+
+{
+  text: 'Hello tirth gajjar km ekfnwlknfwelkn wkejrnwe jklnwer sdfsdknflsdfsd  fnlsdknfkl dnfsdlknlknsl ikakdjksjadkj kjasdjk kjads kjba',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true,
+  sentByUser: false,
+},
+{
+  text: 'Hello tirth gajjar gajjargajjar gajjargajjargajjar gajjargajjar km ekfnwlknfwelkn wkejrnwe jklnwer sdfsdknflsdfsd  fnlsdknfkl dnfsdlknlknsl ikakdjksjadkj kjasdjk kjads  heyy heyyy heyyy ehhyyeh ehehkjba',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true,
+  sentByUser: true,
+},
+{
+  text: 'Hello',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true
+}, {
+  text: 'Hello',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true
+}, {
+  text: 'Hello',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true,
+  sentByUser: true,
+}, {
+  text: 'Hello',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true
+}, {
+  text: 'Hello',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true,
+  sentByUser: true,
+}, {
+  text: 'Hello',
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  seen: true
+},
+]);
+
+
+
+
+import React, { useState } from 'react';
+import InputEmoji from 'react-input-emoji';
+import { LuSendHorizonal } from "react-icons/lu";
+import { Avatar, Button, Divider } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { addmessage } from '../reducer/chatweblist';
+
+function RightOneUsermsg() {
+  const { messagelist } = useSelector((state) => state.userChats);
+  const dispatch = useDispatch();
+
+  const [text, setText] = useState('');
+
+  const handleSend = () => {
+    if (text.trim() !== '') {
+      const newMessage = {
+        text: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        seen: false,
+        sentByUser: true
+      };
+      dispatch(addmessage(newMessage));
+      setText('');
+    }
+  };
+
+  return (
+    <div className='h-[99.5vh] flex flex-col'>
+      {/* Header */}
+      <div className='bg-white px-5 py-4 shadow-sm  flex items-center'>
+        {/* Avatar and Status */}
+        <div>
+          <Avatar className='bg-gray-500 shadow-md' size={44}>HD</Avatar>
+          <div className='relative left-[-11.5px] top-[17px] inline-block '>
+            <span className="bg-green-400 w-3 h-3 rounded-full inline-block shadow-md"></span>
+          </div>
+        </div>
+        {/* User Info */}
+        <div >
+          <h5 className='text-black font-medium text-[0.96rem]'>Hardik Desai</h5>
+          <p className="text-sm text-gray-500">Active now</p>
+        </div>
+      </div>
+
+      {/* Message List */}
+      <div className='flex-1 overflow-y-auto px-6 py-2'>
+        <ul>
+          {Array.isArray(messagelist) && messagelist.map((message, index) => (
+            <React.Fragment key={index}>
+              <Divider className='!text-center before:!w-[18%] before:ml-auto after:mr-auto after:!w-[18%] '>
+                <span className='text-[0.71rem] text-gray-500'>08 May 2024</span>
+              </Divider>
+              <li className={`flex gap-1 my-4 ${message.sentByUser ? 'justify-end' : 'justify-start'}`}>
+                <div >
+                  {message.sentByUser ? '' : <Avatar className='bg-gray-500  !text-[0.8rem]' size={37}>HD</Avatar>}
+                </div>
+                <div>
+                  <div>
+                    <small className={`${message.sentByUser ? 'justify-end' : 'justify-start'} text-[0.7rem] flex `}>{message.time}</small>
+                    <div className={`${message.sentByUser ? 'bg-blue-500 text-white' : 'bg-white !text-black'} text-white px-4 py-2 rounded- ${message.sentByUser ? 'rounded-bl-none rounded-none' : 'rounded-br-none'} shadow-md !max-w-[40rem]`}>
+                      <p>{message.text}</p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </React.Fragment>
+          ))}
+        </ul>
+      </div>
+
+      {/* Input Box */}
+      <div className='bg-white p-4 flex items-center overflow-x-hidden'>
+        <InputEmoji
+          value={text}
+          onChange={setText}
+          cleanOnEnter
+          placeholder="Type a message"
+          className='flex-1 mr-2 '
+        />
+        <Button onClick={handleSend} className='bg-blue-500 rounded-full text-white'>
+          <LuSendHorizonal className='text-[1.2rem]' />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default RightOneUsermsg;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect } from 'react';
+import { Avatar, Dropdown } from 'antd';
+import { AiOutlinePushpin } from 'react-icons/ai';
+import { PiUserFocus } from "react-icons/pi";
+import { AiOutlineDelete } from "react-icons/ai";
+import { Tabs } from 'antd'
+import { useDispatch, useSelector } from 'react-redux';
+import { getNewPatientList } from '../reducer/chatweblist';
+
+
+function User({ name, message, timestamp, avatar, status }) {
+  const items = [
+    {
+      label: 'Add to favorites',
+      icon: <AiOutlinePushpin className="!text-[1.2rem]" />,
+      key: '1',
+    },
+    {
+      label: 'View Profile',
+      icon: <PiUserFocus className="!text-[1.3rem]" />,
+      key: '2',
+    },
+    {
+      label: 'Delete conversation',
+      icon: <AiOutlineDelete className="!text-[1.3rem]" />,
+      key: '3',
+    },
+  ];
+
+  return (
+
+    <Dropdown
+      menu={{
+        items,
+      }}
+      trigger={['contextMenu']}
+    >
+      <div className='flex justify-between gap-4 items-center p-2 hover:bg-slate-100 hover:rounded-lg cursor-pointer hover:shadow  '>
+        <div className='flex !gap-1'>
+          <div>
+            <Avatar className='bg-gray-500 shadow-md' size={44}>{avatar}</Avatar>
+            <div className='relative left-[-11.5px] top-[17px] inline-block '>
+              <span className="bg-green-400 w-3 h-3 rounded-full inline-block shadow-md"></span>
+              {/* <span className={`status-indicator ${status}`}></span> */}
+            </div>
+          </div>
+          <div className='mt-[1px]'>
+            <h5 className=' !text-black font-medium text-[0.96rem]'>{name}</h5>
+            <p className="user_msg_style text-sm">{message}</p>
+          </div>
+        </div>
+        <div>
+
+          <p className='text-[0.68rem] text-gray-500'>{timestamp}</p>
+          <h5 className='bg-blue-500 text-white text-[0.68rem] px-[4px] pt-[2px] pb-[2px] mt-1 rounded-full  w-[fit-content] ml-auto'>17</h5>
+        </div>
+      </div>
+    </Dropdown>
+
+  );
+}
+
+function UserList() {
+
+  const { newPatientList } = useSelector((state) => state.chatWebList)
+  const dispatch = useDispatch()
+
+
+  useEffect(() => {
+    dispatch(getNewPatientList())
+
+  }, [])
+  console.log("New patient list is--: ", newPatientList);
+
+  const users = [
+    { name: 'Tirth Gajjar', message: 'Hello Tirth! Good morning. goood evening', timestamp: '10:17 AM', avatar: 'TG', status: 'online' },
+    { name: 'Hardik Desai', message: 'Hello Tirth! Good morning.', timestamp: '10:17 AM', avatar: 'HD', status: 'offline' },
+
+    { name: 'Hardik Desai', message: 'Hello Tirth! Good morning.', timestamp: 'Yesterday', avatar: 'HD', status: 'offline' }, { name: 'Hardik Desai', message: 'Hello Tirth! Good morning.', timestamp: '02/05/2024 ', avatar: 'HD', status: 'offline' }, { name: 'Hardik Desai', message: 'Hello Tirth! Good morning.', timestamp: '10:17 AM', avatar: 'HD', status: 'offline' }, { name: 'Hardik Desai', message: 'Hello Tirth! Good morning.', timestamp: '10:17 AM', avatar: 'HD', status: 'offline' }, { name: 'Hardik Desai', message: 'Hello Tirth! Good morning.', timestamp: '10:17 AM', avatar: 'HD', status: 'offline' },
+
+  ];
+
+
+
+
+
+  ///right side
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import React, { useState, useEffect, useRef } from 'react'; // Import useRef
+  import InputEmoji from 'react-input-emoji';
+  import { LuSendHorizonal } from "react-icons/lu";
+  import { Avatar, Button, Divider, Input, message } from 'antd';
+  import { useDispatch, useSelector } from 'react-redux';
+  import { IoCheckmarkDoneOutline } from "react-icons/io5";
+  import { createNewMessage, fetchOnemessageList, getOnePatientID } from '../reducer/chatweblist';
+  import moment from 'moment';
+  import io from 'socket.io-client'
+  import StartNewChat from './StartNewChat';
+  import { consumer } from '../Provider/Context';
+
+  // const socket = io.connect("http://192.168.0.115:3000/")
+
+
+  function RightOneUsermsg() {
+
+    // const socket = new WebSocket("ws://192.168.0.115:3000/cable")
+    const { messagelist, oneChatlist, onePatientID } = useSelector((state) => state.chatWebList)
+
+    let userID = Number(localStorage.getItem('user_id'))
+    console.log("Your user id is -:", typeof (userID))
+
+    console.log("Your oneCHat list is -:", oneChatlist)
+
+    const dispatch = useDispatch();
+    const messagesEndRef = useRef(null);
+    const [text, setText] = useState('');
+    const [prevDate, setPrevDate] = useState(null);
+
+
+    useEffect(() => {
+      scrollToBottom();
+      dispatch(fetchOnemessageList());
+    }, [dispatch]); // Removed onePatientID and prevDate from dependencies
+
+    useEffect(() => {
+      if (oneChatlist.length > 0) {
+        scrollToBottom();
+      }
+    }, [oneChatlist]);
+
+    console.log("Your PrevDate is--: ", prevDate);
+
+
+    const scrollToBottom = () => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+
+
+    const handleSend = (a) => {
+      console.log("Your send messgae app is", a)
+      console.log("Your patient id is", onePatientID.patient_id)
+      console.log("text dat is---:", text)
+      if (text.trim() !== '') {
+        const newMessage = {
+          content: text,
+          chat_room_id: onePatientID.id,
+          sender_id: Number(localStorage.getItem('user_id')),
+          receiver_id: onePatientID.patient_id,
+        };
+        const jsonString = JSON.stringify(newMessage);
+        consumer.subscriptions.subscriptions[0].speak(jsonString);
+        // consumer.subscriptions.subscriptions[0].speak(newMessage);
+        setText('');
+        // socket.send(JSON.stringify(newMessage))
+
+
+
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleSend();
+      }
+    };
+
+
+    return (
+      <>
+        {
+          oneChatlist && oneChatlist.length === 0 ? (<div className='!bg-white'><StartNewChat /></div>) : (<div className='h-[99.5vh] flex flex-col'>
+            {/* Header */}
+            <div className='bg-white px-5 py-4 shadow-sm  flex items-center'>
+              {/* Avatar and Status */}
+              <div>
+                <Avatar className='bg-gray-500 shadow-md capitalize' size={44}>{onePatientID && onePatientID.patient_name[0]}</Avatar>
+                <div className='relative left-[-11.5px] top-[17px] inline-block '>
+                  <span className="bg-green-400 w-3 h-3 rounded-full inline-block shadow-md"></span>
+                </div>
+              </div>
+              {/* User Info */}
+              <div >
+                <h5 className='text-black font-medium text-[0.96rem] capitalize'>{onePatientID && onePatientID.patient_name}</h5>
+                <p className="text-sm text-gray-500">Active now</p>
+              </div>
+            </div>
+            {/* WHen my date is same as previous message so dont print date all time i want print one date at a time */}
+
+            {/* Message List */}
+            <div className='flex-1 overflow-y-auto px-6 py-2 relative z-1'>
+              <ul>
+                {oneChatlist && oneChatlist.map((message, index) => (
+                  <React.Fragment key={index}>
+                    {prevDate !== moment(message.created_at).format('LL') ? (
+                      <Divider className='text-center'>
+                        <span className='text-[0.71rem] text-gray-500'>{moment(message.created_at).format('LL')}</span>
+                      </Divider>
+                    ) : ""}
+                    <li className={`flex gap-1 my-4 ${message.sender_id && message.sender_id === userID ? 'justify-end' : 'justify-start'}`}>
+                      {message.sender_id !== userID && (
+                        <Avatar className='bg-gray-500 !text-[0.8rem] capitalize' size={37}>{onePatientID && onePatientID.patient_name}</Avatar>
+                      )}
+                      <div>
+                        <div>
+                          <div className='flex gap-2'>
+                            <div>
+                              <small className={`text-[0.7rem] flex ${message.sender_id && message.sender_id === userID ? 'justify-end' : 'justify-start'}`}>{moment(message.created_at).format('LT')}</small>
+
+                              <div className={`bg-${message.sender_id === userID ? 'blue-500 text-white' : 'white text-black'} px-4 py-2 rounded-${message.sender_id === userID ? 'bl' : 'br'}-none shadow-md !max-w-[40rem] whitespace-pre-line break-all`}>
+                                <p>{message.content}</p>
+
+                                {/* <p>
+
+                                                                <IoCheckmarkDoneOutline className='!text-[1rem]' />
+
+                                                            </p> */}
+                              </div>
+                            </div>
+
+                            <div>
+                              {
+                                message.sender_id === userID && (
+                                  <Avatar className='bg-white text-blue-500 !text-[3rem] capitalize' size={22}>
+                                    {/* <FaCircleDot className='!text-[3rem]' /> */}
+                                    <IoCheckmarkDoneOutline className='!text-[3rem]' />
+
+                                  </Avatar>
+                                )
+                              }
+                            </div>
+
+
+                          </div>
+
+
+
+                        </div>
+                      </div>
+                    </li>
+                  </React.Fragment>
+                ))}
+              </ul>
+              <div ref={messagesEndRef} /> {/* Ref for scrolling to the bottom */}
+            </div>
+
+
+
+            {/* Input Box */}
+            <div className='bg-white p-4 flex items-center overflow-x-hidden '>
+
+              <InputEmoji
+                value={text}
+                onChange={setText}
+                cleanOnEnter
+
+                placeholder="Type a message"
+                className='flex-1 mr-2 absolute z-20 !fixed'
+                onKeyDown={handleKeyDown} // Add keydown event listener
+              />
+              {/* <Input></Input>
+                <EmojiPicker /> */}
+              <Button onClick={() => { handleSend(text, oneChatlist.receiver_id) }} className='bg-blue-500 rounded-full text-white'>
+                <LuSendHorizonal className='text-[1.2rem]' />
+              </Button>
+            </div>
+          </div>)
+        }
+
+      </>
+
+    );
+  }
+
+  export default RightOneUsermsg;
+
+
+
+
+
+  newSocket.onmessage = (event) => {
+    // Handle incoming messages
+    const message = JSON.parse(event.data);
+    console.log("----- WEBSocket Received message --:", message);
+    setMessages(prevMessages => [...prevMessages, message]);
+    scrollToBottom();
+  };

@@ -309,6 +309,7 @@ function Rota() {
                                                     <Skeleton />
                                                     <Skeleton />
                                                     <Skeleton />
+                                                    <Skeleton />
                                                 </div>
                                             ) : (
                                                 addRota?.available_slots.length <= 0 ? (
