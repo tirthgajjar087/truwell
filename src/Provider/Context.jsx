@@ -22,8 +22,12 @@
 import React from 'react';
 import { createConsumer } from '@rails/actioncable';
 
+//npm install @rails/actioncable
+
 const CableContext = React.createContext();
 const URL = 'ws://192.168.0.115:3000/cable';
+// const URL = 'ws://192.168.0.115:3000/cable';
+
 const consumer = createConsumer(URL);
 
 function CableProvider({ children }) {
@@ -33,7 +37,7 @@ function CableProvider({ children }) {
         </CableContext.Provider>
     );
 }
-
+ 
 export { CableContext, CableProvider, consumer };
 
 

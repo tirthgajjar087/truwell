@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { message } from 'antd';
 
-// export const backendURL = 'https://37c7-122-170-10-87.ngrok-free.app';
+// export const backendURL = 'https://5f6f-122-170-10-87.ngrok-free.app';
 export const backendURL = 'http://192.168.0.115:3000';
 
 //Handle Api Error

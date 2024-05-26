@@ -60,7 +60,7 @@ function UpcomingApp() {
             title: "Appointment Time",
             dataIndex: "appointment_date",
             render: (text) => moment(text, 'YYYY-MM-DD,HH:mm').format("HH:mm"),
-            // Remove unnecessary filterDropdown and onFilter properties
+
         },
         {
             title: "Appointment Fee",

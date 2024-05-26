@@ -44,6 +44,7 @@ function Rota() {
         form.setFieldsValue({
             price: docDetails?.doctor_information?.charges,
         })
+
         if (!isDocProfileFilled()) {
             message.error('Please fill all values in the edit profile.');
             setIsModalOpen(false);

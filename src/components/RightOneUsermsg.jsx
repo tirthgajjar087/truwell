@@ -18,11 +18,6 @@ import { consumer } from '../Provider/Context';
 
 function RightOneUsermsg() {
 
-    // const socket = new WebSocket("ws://192.168.0.115:3000/cable")
-
-
-
-
     const { messagelist, oneChatlist, onePatientID } = useSelector((state) => state.chatWebList)
 
     let userID = Number(localStorage.getItem('user_id'))
@@ -36,52 +31,66 @@ function RightOneUsermsg() {
     const [text, setText] = useState('');
     const [chatChannel, setChatChannel] = useState(null);
     const [prevDate, setPrevDate] = useState(null);
+    const [prevMessageDate, setPrevMessageDate] = useState(null);
+    const [messages, setMessage] = useState(oneChatlist);
 
-
-    // useEffect(() => {
-    //     scrollToBottom();
-    //     dispatch(fetchOnemessageList());
-    // }, [onePatientID]); 
-    // Removed onePatientID and prevDate from dependencies
-
-    // useEffect(() => {
-    //     if (oneChatlist.length > 0) {
-    //         scrollToBottom();
-    //     }
-    //     socket.onopen = () => {
-    //         console.log('WebSocket Client Connected');
-    //     };
-
-
-
-    //     socket.onclose = () => {
-    //         console.log('WebSocket Client Disconnected');
-    //     };
-    // }, []);
-
-    useEffect(() => {
-        dispatch(fetchOnemessageList());
-    }, [onePatientID]);
 
     useEffect(() => {
         scrollToBottom();
+        dispatch(fetchOnemessageList());
+    }, [onePatientID]);
+
+
+
+    const getDateLabel = (messageDate) => {
+        const today = moment().startOf('day');
+        const yesterday = moment().subtract(1, 'days').startOf('day');
+        const msgDate = moment(messageDate).startOf('day');
+
+        if (msgDate.isSame(today, 'day')) {
+            return 'Today';
+        } else if (msgDate.isSame(yesterday, 'day')) {
+            return 'Yesterday';
+        } else {
+            return moment(messageDate).format('LL');
+        }
+    };
+
+
+
+
+
+    useEffect(() => {
+        if (oneChatlist.length > 0) {
+            scrollToBottom();
+            // Set the previous message date to the date of the first message
+            setPrevMessageDate(moment(oneChatlist[0].created_at).format('LL'));
+        }
+        // setPrevDate(moment(oneChatlist?.created_at).format('LL'))
+        // formatMsgDate(moment(oneChatlist?.created_at).format('LL'))
+
         const subscription = consumer.subscriptions.create(
             { channel: 'ChatRoomChannel', chat_room_id: onePatientID.id },
             {
+                connected: () => console.log('---- connected -------'),
+                disconnected: () => console.log('disconnected'),
                 received: (data) => {
-                    console.log("Received data from server:", data);
-                    // Handle received data from server
-                }
+                    setMessage(prevMessages => [...prevMessages, data]);
+                    console.log('-------- Received data from server ---------', JSON.stringify(data));
+                    console.log("----------- WebSocket Message are here: ", message)
+                },
             }
         );
 
         return () => {
             subscription.unsubscribe();
         };
+
     }, [onePatientID]);
 
 
-    console.log("Your PrevDate is--: ", prevDate);
+
+    console.log("----------------- Your PrevDate is--: ", prevDate);
 
 
     const scrollToBottom = () => {
@@ -90,6 +99,7 @@ function RightOneUsermsg() {
         }
     };
 
+    console.log("WebSocket Message are here: ", messages)
 
 
     const handleSend = (a) => {
@@ -104,27 +114,14 @@ function RightOneUsermsg() {
                 receiver_id: onePatientID.patient_id,
             };
             const jsonString = JSON.stringify(newMessage);
-            // socket.onopen = function () {
-            //     console.log("-------- Your socket is open ------------")
-            //     socket.send('speak', jsonString);
-            // }
-
-            // socket.send(
-            //     {
-            //         command: 'speak',
-            //         data: jsonString,
-            //         channel: 'ChatRoomChannel',
-            //     }
-            // );
 
             const subscription = consumer.subscriptions.subscriptions.find(sub => sub.identifier === JSON.stringify({ channel: 'ChatRoomChannel', chat_room_id: onePatientID.id }));
             if (subscription) {
-                subscription.send({ data: jsonString });
+                subscription.send(newMessage);
                 setText('');
             } else {
                 console.error("Subscription not found.");
             }
-
             setText('');
             // socket.send(JSON.stringify(newMessage))
 
@@ -158,21 +155,33 @@ function RightOneUsermsg() {
                             <p className="text-sm text-gray-500">Active now</p>
                         </div>
                     </div>
-                    {/* WHen my date is same as previous message so dont print date all time i want print one date at a time */}
-
-                    {/* Message List */}
+                   
                     <div className='flex-1 overflow-y-auto px-6 py-2 relative z-1'>
+
                         <ul>
                             {oneChatlist && oneChatlist.map((message, index) => (
                                 <React.Fragment key={index}>
-                                    {prevDate !== moment(message.created_at).format('LL') ? (
-                                        <Divider className='text-center'>
-                                            <span className='text-[0.71rem] text-gray-500'>{moment(message.created_at).format('LL')}</span>
-                                        </Divider>
-                                    ) : ""}
+                                    {
+
+                                        prevDate !== getDateLabel(moment(message.created_at).format('LL')) ? (
+                                            <Divider className='text-center'>
+
+                                                <span className='text-[0.71rem] text-gray-500'>{moment(message.created_at).format('LL')}</span>
+                                            </Divider>
+                                        ) : ""}
+                                    {/* Determine the date label for the current message */}
+                                    { }
+                                    {/* Check if the date label is different from the previous message's date label */}
+
+
+
+                                    {
+                                        // formatMsgDate(moment(oneChatlist?.created_at).format('LL'))
+
+                                    }
                                     <li className={`flex gap-1 my-4 ${message.sender_id && message.sender_id === userID ? 'justify-end' : 'justify-start'}`}>
                                         {message.sender_id !== userID && (
-                                            <Avatar className='bg-gray-500 !text-[0.8rem] capitalize' size={37}>{onePatientID && onePatientID.patient_name}</Avatar>
+                                            <Avatar className='bg-gray-500 !text-[0.8rem] capitalize' size={37}>{onePatientID && onePatientID.patient_name[0]}</Avatar>
                                         )}
                                         <div>
                                             <div>
@@ -181,6 +190,7 @@ function RightOneUsermsg() {
                                                         <small className={`text-[0.7rem] flex ${message.sender_id && message.sender_id === userID ? 'justify-end' : 'justify-start'}`}>{moment(message.created_at).format('LT')}</small>
 
                                                         <div className={`bg-${message.sender_id === userID ? 'blue-500 text-white' : 'white text-black'} px-4 py-2 rounded-${message.sender_id === userID ? 'bl' : 'br'}-none shadow-md !max-w-[40rem] whitespace-pre-line break-all`}>
+
                                                             <p>{message.content}</p>
 
                                                             {/* <p>
@@ -197,7 +207,6 @@ function RightOneUsermsg() {
                                                                 <Avatar className='bg-white text-blue-500 !text-[3rem] capitalize' size={22}>
                                                                     {/* <FaCircleDot className='!text-[3rem]' /> */}
                                                                     <IoCheckmarkDoneOutline className='!text-[3rem]' />
-
                                                                 </Avatar>
                                                             )
                                                         }
@@ -214,7 +223,8 @@ function RightOneUsermsg() {
                                 </React.Fragment>
                             ))}
                         </ul>
-                        <div ref={messagesEndRef} /> {/* Ref for scrolling to the bottom */}
+                        <div ref={messagesEndRef} />
+
                     </div>
 
 
@@ -237,6 +247,8 @@ function RightOneUsermsg() {
                             <LuSendHorizonal className='text-[1.2rem]' />
                         </Button>
                     </div>
+                    <div ref={scrollToBottom}></div>
+
                 </div>)
             }
 
